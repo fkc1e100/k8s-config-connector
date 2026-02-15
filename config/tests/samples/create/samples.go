@@ -39,6 +39,7 @@ import (
 	"github.com/ghodss/yaml" //nolint:depguard
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -154,9 +155,30 @@ func RunCreateDeleteTest(t *Harness, opt CreateDeleteTestOptions) {
 	if len(opt.Updates) != 0 {
 		// treat as a patch
 		for _, updateUnstruct := range opt.Updates {
-			t.Logf("using server-side apply to update object")
-			if err := t.GetClient().Patch(ctx, updateUnstruct, client.Apply, client.FieldOwner("kcc-tests"), client.ForceOwnership); err != nil {
-				t.Fatalf("error updating resource: %v", err)
+			if opt.DoNotUseServerSideApplyForCreate {
+				t.Logf("using legacy update (get then update) to update object")
+				current := &unstructured.Unstructured{}
+				current.SetGroupVersionKind(updateUnstruct.GroupVersionKind())
+				namespacedName := types.NamespacedName{
+					Name:      updateUnstruct.GetName(),
+					Namespace: updateUnstruct.GetNamespace(),
+				}
+				if err := t.GetClient().Get(ctx, namespacedName, current); err != nil {
+					t.Fatalf("error getting resource for update: %v", err)
+				}
+				// We only want to update the spec and labels/annotations
+				current.Object["spec"] = updateUnstruct.Object["spec"]
+				current.SetLabels(updateUnstruct.GetLabels())
+				current.SetAnnotations(updateUnstruct.GetAnnotations())
+
+				if err := t.GetClient().Update(ctx, current); err != nil {
+					t.Fatalf("error updating resource: %v", err)
+				}
+			} else {
+				t.Logf("using server-side apply to update object")
+				if err := t.GetClient().Patch(ctx, updateUnstruct, client.Apply, client.FieldOwner("kcc-tests"), client.ForceOwnership); err != nil {
+					t.Fatalf("error updating resource: %v", err)
+				}
 			}
 			if opt.CreateInOrder && !opt.SkipWaitForReady {
 				waitForReadySingleResource(t, updateUnstruct, DefaultWaitForReadyTimeout)

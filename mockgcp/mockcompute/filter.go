@@ -29,34 +29,67 @@ func matchFilter(filter string, obj proto.Message) (bool, error) {
 		return true, nil
 	}
 
+	// Handle AND filters
+	if strings.Contains(filter, " AND ") {
+		parts := strings.Split(filter, " AND ")
+		for _, part := range parts {
+			part = strings.TrimSpace(part)
+			part = strings.TrimPrefix(part, "(")
+			part = strings.TrimSuffix(part, ")")
+			match, err := matchFilter(part, obj)
+			if err != nil {
+				return false, err
+			}
+			if !match {
+				return false, nil
+			}
+		}
+		return true, nil
+	}
+
 	// We basically hand-code the filter logic for now, while we figure out what we need.
 	// There's a variety of syntaxes in use.
 	if before, after, found := strings.Cut(filter, "network eq \""); found {
 		if before != "" {
 			return false, fmt.Errorf("filter '%v' not implemented by mockgcp", filter)
 		}
-		fieldName := "network"
-		// Make sure there's just one term in the filter.
-		query := strings.TrimSuffix(after, "\"")
-		if strings.Contains(query, "\"") {
+		return matchField(obj, "network", after)
+	}
+	if before, after, found := strings.Cut(filter, "network=\""); found {
+		if before != "" {
 			return false, fmt.Errorf("filter '%v' not implemented by mockgcp", filter)
 		}
-		query = strings.TrimPrefix(query, ".*\\b")
-		query = strings.TrimSuffix(query, "\\b.*")
-
-		// Some basic unescaping.
-		query = strings.ReplaceAll(query, "\\-", "-")
-
-		fd := obj.ProtoReflect().Descriptor().Fields().ByName(protoreflect.Name(fieldName))
-		if fd == nil {
-			return false, fmt.Errorf("field '%q' not known", fieldName)
+		return matchField(obj, "network", after)
+	}
+	if before, after, found := strings.Cut(filter, "destRange=\""); found {
+		if before != "" {
+			return false, fmt.Errorf("filter '%v' not implemented by mockgcp", filter)
 		}
-		network := obj.ProtoReflect().Get(fd).String()
-		// Technically \b is a word boundary, but we'll just use it as a substring match.
-		if !strings.Contains(network, query) {
-			return false, nil
-		}
-		return true, nil
+		return matchField(obj, "destRange", after)
 	}
 	return false, fmt.Errorf("filter '%v' not implemented by mockgcp", filter)
+}
+
+func matchField(obj proto.Message, fieldName string, after string) (bool, error) {
+	// Make sure there's just one term in the filter.
+	query := strings.TrimSuffix(after, "\"")
+	if strings.Contains(query, "\"") {
+		return false, fmt.Errorf("complex filter not implemented by mockgcp")
+	}
+	query = strings.TrimPrefix(query, ".*\\b")
+	query = strings.TrimSuffix(query, "\\b.*")
+
+	// Some basic unescaping.
+	query = strings.ReplaceAll(query, "\\-", "-")
+
+	fd := obj.ProtoReflect().Descriptor().Fields().ByName(protoreflect.Name(fieldName))
+	if fd == nil {
+		return false, fmt.Errorf("field '%q' not known", fieldName)
+	}
+	val := obj.ProtoReflect().Get(fd).String()
+	// Technically \b is a word boundary, but we'll just use it as a substring match.
+	if !strings.Contains(val, query) {
+		return false, nil
+	}
+	return true, nil
 }

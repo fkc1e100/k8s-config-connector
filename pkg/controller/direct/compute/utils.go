@@ -23,7 +23,6 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/k8s"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -78,20 +77,42 @@ func resolveResourceName(ctx context.Context, reader client.Reader, key client.O
 	return resource, nil
 }
 
-func setStatus(u *unstructured.Unstructured, typedStatus any) error {
-	status, err := runtime.DefaultUnstructuredConverter.ToUnstructured(typedStatus)
-	if err != nil {
-		return fmt.Errorf("error converting status to unstructured: %w", err)
+func int64Ptr(v *int32) *int64 {
+	if v == nil {
+		return nil
 	}
+	val := int64(*v)
+	return &val
+}
 
-	old, _, _ := unstructured.NestedMap(u.Object, "status")
-	if old != nil {
-		status["conditions"] = old["conditions"]
-		status["observedGeneration"] = old["observedGeneration"]
-		status["externalRef"] = old["externalRef"]
+func int32Ptr(v *int64) *int32 {
+	if v == nil {
+		return nil
 	}
+	val := int32(*v)
+	return &val
+}
 
-	u.Object["status"] = status
+func int64PtrFromUint32Ptr(v *uint32) *int64 {
+	if v == nil {
+		return nil
+	}
+	val := int64(*v)
+	return &val
+}
 
-	return nil
+func uint32PtrFromInt64Ptr(v *int64) *uint32 {
+	if v == nil {
+		return nil
+	}
+	val := uint32(*v)
+	return &val
+}
+
+func int64PtrFromUint64Ptr(v *uint64) *int64 {
+	if v == nil {
+		return nil
+	}
+	val := int64(*v)
+	return &val
 }

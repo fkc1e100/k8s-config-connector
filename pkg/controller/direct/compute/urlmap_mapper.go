@@ -842,35 +842,3 @@ func HttpQueryParameterMatch_ToProto(mapCtx *direct.MapContext, in *krm.UrlmapQu
 	out.RegexMatch = in.RegexMatch
 	return out
 }
-
-func int64Ptr(v *int32) *int64 {
-	if v == nil {
-		return nil
-	}
-	val := int64(*v)
-	return &val
-}
-
-func int32Ptr(v *int64) *int32 {
-	if v == nil {
-		return nil
-	}
-	val := int32(*v)
-	return &val
-}
-
-func int64PtrFromUint32Ptr(v *uint32) *int64 {
-	if v == nil {
-		return nil
-	}
-	val := int64(*v)
-	return &val
-}
-
-func uint32PtrFromInt64Ptr(v *int64) *uint32 {
-	if v == nil {
-		return nil
-	}
-	val := uint32(*v)
-	return &val
-}

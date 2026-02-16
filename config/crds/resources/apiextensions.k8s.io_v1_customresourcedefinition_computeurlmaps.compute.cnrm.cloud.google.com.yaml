@@ -2952,6 +2952,8 @@ spec:
                   the resource.
                 format: int64
                 type: integer
+              observedState:
+                type: object
               selfLink:
                 type: string
             type: object

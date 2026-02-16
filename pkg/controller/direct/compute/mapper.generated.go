@@ -263,6 +263,52 @@ func ComputeSubnetworkStatus_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.
 	// MISSING: SystemReservedInternalIPV6Ranges
 	return out
 }
+func ComputeURLMapObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.UrlMap) *krm.ComputeURLMapObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ComputeURLMapObservedState{}
+	// MISSING: CreationTimestamp
+	// MISSING: DefaultCustomErrorResponsePolicy
+	// MISSING: DefaultRouteAction
+	// MISSING: DefaultService
+	// MISSING: DefaultURLRedirect
+	// MISSING: Description
+	// MISSING: Fingerprint
+	// MISSING: HeaderAction
+	// MISSING: HostRules
+	// MISSING: ID
+	// MISSING: Kind
+	// MISSING: Name
+	// MISSING: PathMatchers
+	// MISSING: Region
+	// MISSING: SelfLink
+	// MISSING: Tests
+	return out
+}
+func ComputeURLMapObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.ComputeURLMapObservedState) *pb.UrlMap {
+	if in == nil {
+		return nil
+	}
+	out := &pb.UrlMap{}
+	// MISSING: CreationTimestamp
+	// MISSING: DefaultCustomErrorResponsePolicy
+	// MISSING: DefaultRouteAction
+	// MISSING: DefaultService
+	// MISSING: DefaultURLRedirect
+	// MISSING: Description
+	// MISSING: Fingerprint
+	// MISSING: HeaderAction
+	// MISSING: HostRules
+	// MISSING: ID
+	// MISSING: Kind
+	// MISSING: Name
+	// MISSING: PathMatchers
+	// MISSING: Region
+	// MISSING: SelfLink
+	// MISSING: Tests
+	return out
+}
 func Expr_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Expr) *krm.Expr {
 	if in == nil {
 		return nil

@@ -969,7 +969,14 @@ type ComputeURLMapStatus struct {
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// +optional
+	ObservedState *ComputeURLMapObservedState `json:"observedState,omitempty"`
+
+	// +optional
 	SelfLink *string `json:"selfLink,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.UrlMap
+type ComputeURLMapObservedState struct {
 }
 
 // +genclient

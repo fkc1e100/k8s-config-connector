@@ -1,0 +1,6 @@
+=== RUN   TestCRDFieldPresenceInTestsForAlpha
+=== PAUSE TestCRDFieldPresenceInTestsForAlpha
+=== CONT  TestCRDFieldPresenceInTestsForAlpha
+--- PASS: TestCRDFieldPresenceInTestsForAlpha (0.99s)
+PASS
+ok  	github.com/GoogleCloudPlatform/k8s-config-connector/tests/apichecks	1.024s

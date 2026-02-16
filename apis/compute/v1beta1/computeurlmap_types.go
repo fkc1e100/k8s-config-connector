@@ -36,75 +36,61 @@ import (
 )
 
 type UrlmapAbort struct {
-	
+
 	// +optional
 	HttpStatus *int64 `json:"httpStatus,omitempty"`
 
-	
 	// +optional
 	Percentage *float64 `json:"percentage,omitempty"`
 }
 
 type UrlmapCorsPolicy struct {
-	
+
 	// +optional
 	AllowCredentials *bool `json:"allowCredentials,omitempty"`
 
-	
 	// +optional
 	AllowHeaders []string `json:"allowHeaders,omitempty"`
 
-	
 	// +optional
 	AllowMethods []string `json:"allowMethods,omitempty"`
 
-	
 	// +optional
 	AllowOriginRegexes []string `json:"allowOriginRegexes,omitempty"`
 
-	
 	// +optional
 	AllowOrigins []string `json:"allowOrigins,omitempty"`
 
-	
 	// +optional
 	Disabled *bool `json:"disabled,omitempty"`
 
-	
 	// +optional
 	ExposeHeaders []string `json:"exposeHeaders,omitempty"`
 
-	
 	// +optional
 	MaxAge *int64 `json:"maxAge,omitempty"`
 }
 
 type UrlmapDefaultRouteAction struct {
-	
+
 	// +optional
 	CorsPolicy *UrlmapCorsPolicy `json:"corsPolicy,omitempty"`
 
-	
 	// +optional
 	FaultInjectionPolicy *UrlmapFaultInjectionPolicy `json:"faultInjectionPolicy,omitempty"`
 
-	
 	// +optional
 	RequestMirrorPolicy *UrlmapRequestMirrorPolicy `json:"requestMirrorPolicy,omitempty"`
 
-	
 	// +optional
 	RetryPolicy *UrlmapRetryPolicy `json:"retryPolicy,omitempty"`
 
-	
 	// +optional
 	Timeout *UrlmapTimeout `json:"timeout,omitempty"`
 
-	
 	// +optional
 	UrlRewrite *UrlmapUrlRewrite `json:"urlRewrite,omitempty"`
 
-	
 	// +optional
 	WeightedBackendServices []UrlmapWeightedBackendServices `json:"weightedBackendServices,omitempty"`
 }
@@ -118,347 +104,278 @@ type UrlmapDefaultService struct {
 }
 
 type UrlmapDefaultUrlRedirect struct {
-	
+
 	// +optional
 	HostRedirect *string `json:"hostRedirect,omitempty"`
 
-	
 	// +optional
 	HttpsRedirect *bool `json:"httpsRedirect,omitempty"`
 
-	
 	// +optional
 	PathRedirect *string `json:"pathRedirect,omitempty"`
 
-	
 	// +optional
 	PrefixRedirect *string `json:"prefixRedirect,omitempty"`
 
-	
 	// +optional
 	RedirectResponseCode *string `json:"redirectResponseCode,omitempty"`
 
-	
 	StripQuery bool `json:"stripQuery"`
 }
 
 type UrlmapDelay struct {
-	
+
 	// +optional
 	FixedDelay *UrlmapFixedDelay `json:"fixedDelay,omitempty"`
 
-	
 	// +optional
 	Percentage *float64 `json:"percentage,omitempty"`
 }
 
 type UrlmapFaultInjectionPolicy struct {
-	
+
 	// +optional
 	Abort *UrlmapAbort `json:"abort,omitempty"`
 
-	
 	// +optional
 	Delay *UrlmapDelay `json:"delay,omitempty"`
 }
 
 type UrlmapFilterLabels struct {
-	
 	Name string `json:"name"`
 
-	
 	Value string `json:"value"`
 }
 
 type UrlmapFixedDelay struct {
-	
+
 	// +optional
 	Nanos *int64 `json:"nanos,omitempty"`
 
-	
 	Seconds string `json:"seconds"`
 }
 
 type UrlmapHeaderAction struct {
-	
+
 	// +optional
 	RequestHeadersToAdd []UrlmapRequestHeadersToAdd `json:"requestHeadersToAdd,omitempty"`
 
-	
 	// +optional
 	RequestHeadersToRemove []string `json:"requestHeadersToRemove,omitempty"`
 
-	
 	// +optional
 	ResponseHeadersToAdd []UrlmapResponseHeadersToAdd `json:"responseHeadersToAdd,omitempty"`
 
-	
 	// +optional
 	ResponseHeadersToRemove []string `json:"responseHeadersToRemove,omitempty"`
 }
 
 type UrlmapHeaderMatches struct {
-	
+
 	// +optional
 	ExactMatch *string `json:"exactMatch,omitempty"`
 
-	
 	HeaderName string `json:"headerName"`
 
-	
 	// +optional
 	InvertMatch *bool `json:"invertMatch,omitempty"`
 
-	
 	// +optional
 	PrefixMatch *string `json:"prefixMatch,omitempty"`
 
-	
 	// +optional
 	PresentMatch *bool `json:"presentMatch,omitempty"`
 
-	
 	// +optional
 	RangeMatch *UrlmapRangeMatch `json:"rangeMatch,omitempty"`
 
-	
 	// +optional
 	RegexMatch *string `json:"regexMatch,omitempty"`
 
-	
 	// +optional
 	SuffixMatch *string `json:"suffixMatch,omitempty"`
 }
 
 type UrlmapHostRule struct {
-	
+
 	// +optional
 	Description *string `json:"description,omitempty"`
 
-	
 	Hosts []string `json:"hosts"`
 
-	
 	PathMatcher string `json:"pathMatcher"`
 }
 
 type UrlmapMatchRules struct {
-	
+
 	// +optional
 	FullPathMatch *string `json:"fullPathMatch,omitempty"`
 
-	
 	// +optional
 	HeaderMatches []UrlmapHeaderMatches `json:"headerMatches,omitempty"`
 
-	
 	// +optional
 	IgnoreCase *bool `json:"ignoreCase,omitempty"`
 
-	
 	// +optional
 	MetadataFilters []UrlmapMetadataFilters `json:"metadataFilters,omitempty"`
 
-	
 	// +optional
 	PathTemplateMatch *string `json:"pathTemplateMatch,omitempty"`
 
-	
 	// +optional
 	PrefixMatch *string `json:"prefixMatch,omitempty"`
 
-	
 	// +optional
 	QueryParameterMatches []UrlmapQueryParameterMatches `json:"queryParameterMatches,omitempty"`
 
-	
 	// +optional
 	RegexMatch *string `json:"regexMatch,omitempty"`
 }
 
 type UrlmapMetadataFilters struct {
-	
 	FilterLabels []UrlmapFilterLabels `json:"filterLabels"`
 
-	
 	FilterMatchCriteria string `json:"filterMatchCriteria"`
 }
 
 type UrlmapPathMatcher struct {
-	
+
 	// +optional
 	DefaultRouteAction *UrlmapDefaultRouteAction `json:"defaultRouteAction,omitempty"`
 
-	
 	// +optional
 	DefaultService *UrlmapDefaultService `json:"defaultService,omitempty"`
 
-	
 	// +optional
 	DefaultUrlRedirect *UrlmapDefaultUrlRedirect `json:"defaultUrlRedirect,omitempty"`
 
-	
 	// +optional
 	Description *string `json:"description,omitempty"`
 
-	
 	// +optional
 	HeaderAction *UrlmapHeaderAction `json:"headerAction,omitempty"`
 
-	
 	Name string `json:"name"`
 
-	
 	// +optional
 	PathRule []UrlmapPathRule `json:"pathRule,omitempty"`
 
-	
 	// +optional
 	RouteRules []UrlmapRouteRules `json:"routeRules,omitempty"`
 }
 
 type UrlmapPathRule struct {
-	
 	Paths []string `json:"paths"`
 
-	
 	// +optional
 	RouteAction *UrlmapRouteAction `json:"routeAction,omitempty"`
 
-	
 	// +optional
 	Service *UrlmapService `json:"service,omitempty"`
 
-	
 	// +optional
 	UrlRedirect *UrlmapUrlRedirect `json:"urlRedirect,omitempty"`
 }
 
 type UrlmapPerTryTimeout struct {
-	
+
 	// +optional
 	Nanos *int64 `json:"nanos,omitempty"`
 
-	
 	Seconds string `json:"seconds"`
 }
 
 type UrlmapQueryParameterMatches struct {
-	
+
 	// +optional
 	ExactMatch *string `json:"exactMatch,omitempty"`
 
-	
 	Name string `json:"name"`
 
-	
 	// +optional
 	PresentMatch *bool `json:"presentMatch,omitempty"`
 
-	
 	// +optional
 	RegexMatch *string `json:"regexMatch,omitempty"`
 }
 
 type UrlmapRangeMatch struct {
-	
 	RangeEnd int64 `json:"rangeEnd"`
 
-	
 	RangeStart int64 `json:"rangeStart"`
 }
 
 type UrlmapRequestHeadersToAdd struct {
-	
 	HeaderName string `json:"headerName"`
 
-	
 	HeaderValue string `json:"headerValue"`
 
-	
 	Replace bool `json:"replace"`
 }
 
 type UrlmapRequestMirrorPolicy struct {
-	
 	BackendServiceRef v1alpha1.ResourceRef `json:"backendServiceRef"`
 }
 
 type UrlmapResponseHeadersToAdd struct {
-	
 	HeaderName string `json:"headerName"`
 
-	
 	HeaderValue string `json:"headerValue"`
 
-	
 	Replace bool `json:"replace"`
 }
 
 type UrlmapRetryPolicy struct {
-	
 	NumRetries int64 `json:"numRetries"`
 
-	
 	// +optional
 	PerTryTimeout *UrlmapPerTryTimeout `json:"perTryTimeout,omitempty"`
 
-	
 	// +optional
 	RetryConditions []string `json:"retryConditions,omitempty"`
 }
 
 type UrlmapRouteAction struct {
-	
+
 	// +optional
 	CorsPolicy *UrlmapCorsPolicy `json:"corsPolicy,omitempty"`
 
-	
 	// +optional
 	FaultInjectionPolicy *UrlmapFaultInjectionPolicy `json:"faultInjectionPolicy,omitempty"`
 
-	
 	// +optional
 	RequestMirrorPolicy *UrlmapRequestMirrorPolicy `json:"requestMirrorPolicy,omitempty"`
 
-	
 	// +optional
 	RetryPolicy *UrlmapRetryPolicy `json:"retryPolicy,omitempty"`
 
-	
 	// +optional
 	Timeout *UrlmapTimeout `json:"timeout,omitempty"`
 
-	
 	// +optional
 	UrlRewrite *UrlmapUrlRewrite `json:"urlRewrite,omitempty"`
 
-	
 	// +optional
 	WeightedBackendServices []UrlmapWeightedBackendServices `json:"weightedBackendServices,omitempty"`
 }
 
 type UrlmapRouteRules struct {
-	
+
 	// +optional
 	HeaderAction *UrlmapHeaderAction `json:"headerAction,omitempty"`
 
-	
 	// +optional
 	MatchRules []UrlmapMatchRules `json:"matchRules,omitempty"`
 
-	
 	Priority int64 `json:"priority"`
 
-	
 	// +optional
 	RouteAction *UrlmapRouteAction `json:"routeAction,omitempty"`
 
-	
 	// +optional
 	Service *string `json:"service,omitempty"`
 
-	
 	// +optional
 	UrlRedirect *UrlmapUrlRedirect `json:"urlRedirect,omitempty"`
 }
@@ -472,138 +389,111 @@ type UrlmapService struct {
 }
 
 type UrlmapTest struct {
-	
+
 	// +optional
 	Description *string `json:"description,omitempty"`
 
-	
 	Host string `json:"host"`
 
-	
 	Path string `json:"path"`
 
-	
 	Service UrlmapService `json:"service"`
 }
 
 type UrlmapTimeout struct {
-	
+
 	// +optional
 	Nanos *int64 `json:"nanos,omitempty"`
 
-	
 	Seconds string `json:"seconds"`
 }
 
 type UrlmapUrlRedirect struct {
-	
+
 	// +optional
 	HostRedirect *string `json:"hostRedirect,omitempty"`
 
-	
 	// +optional
 	HttpsRedirect *bool `json:"httpsRedirect,omitempty"`
 
-	
 	// +optional
 	PathRedirect *string `json:"pathRedirect,omitempty"`
 
-	
 	// +optional
 	PrefixRedirect *string `json:"prefixRedirect,omitempty"`
 
-	
 	// +optional
 	RedirectResponseCode *string `json:"redirectResponseCode,omitempty"`
 
-	
 	// +optional
 	StripQuery *bool `json:"stripQuery,omitempty"`
 }
 
 type UrlmapUrlRewrite struct {
-	
+
 	// +optional
 	HostRewrite *string `json:"hostRewrite,omitempty"`
 
-	
 	// +optional
 	PathPrefixRewrite *string `json:"pathPrefixRewrite,omitempty"`
 
-	
 	// +optional
 	PathTemplateRewrite *string `json:"pathTemplateRewrite,omitempty"`
 }
 
 type UrlmapWeightedBackendServices struct {
-	
 	BackendServiceRef v1alpha1.ResourceRef `json:"backendServiceRef"`
 
-	
 	// +optional
 	HeaderAction *UrlmapHeaderAction `json:"headerAction,omitempty"`
 
-	
 	Weight int64 `json:"weight"`
 }
 
 type ComputeURLMapSpec struct {
-	
+
 	// +optional
 	DefaultRouteAction *UrlmapDefaultRouteAction `json:"defaultRouteAction,omitempty"`
 
-	
 	// +optional
 	DefaultService *UrlmapDefaultService `json:"defaultService,omitempty"`
 
-	
 	// +optional
 	DefaultUrlRedirect *UrlmapDefaultUrlRedirect `json:"defaultUrlRedirect,omitempty"`
 
-	
 	// +optional
 	Description *string `json:"description,omitempty"`
 
-	
 	// +optional
 	HeaderAction *UrlmapHeaderAction `json:"headerAction,omitempty"`
 
-	
 	// +optional
 	HostRule []UrlmapHostRule `json:"hostRule,omitempty"`
 
-	
 	Location string `json:"location"`
 
-	
 	// +optional
 	PathMatcher []UrlmapPathMatcher `json:"pathMatcher,omitempty"`
 
-	
 	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
 
-	
 	// +optional
 	Test []UrlmapTest `json:"test,omitempty"`
 }
 
 type ComputeURLMapStatus struct {
-	
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
-	
+
 	// +optional
 	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
 
-	
 	// +optional
 	Fingerprint *string `json:"fingerprint,omitempty"`
 
-	
 	// +optional
 	MapId *int64 `json:"mapId,omitempty"`
 
-	
 	// +optional
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 

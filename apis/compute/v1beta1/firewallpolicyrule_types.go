@@ -26,92 +26,74 @@ var (
 
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config
 type FirewallPolicyRuleMatcherLayer4Config struct {
-	
+
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config.ip_protocol
 	IPProtocol string `json:"ipProtocol"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config.ports
 	Ports []string `json:"ports,omitempty"`
 }
 
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcher
 type FirewallPolicyRuleMatcher struct {
-	
+
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_address_groups
 	DestAddressGroups []string `json:"destAddressGroups,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_fqdns
 	DestFqdns []string `json:"destFqdns,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_ip_ranges
 	DestIPRanges []string `json:"destIPRanges,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_region_codes
 	DestRegionCodes []string `json:"destRegionCodes,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_threat_intelligences
 	DestThreatIntelligences []string `json:"destThreatIntelligences,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.layer4_configs
 	Layer4Configs []FirewallPolicyRuleMatcherLayer4Config `json:"layer4Configs"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_address_groups
 	SrcAddressGroups []string `json:"srcAddressGroups,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_fqdns
 	SrcFqdns []string `json:"srcFqdns,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_ip_ranges
 	SrcIPRanges []string `json:"srcIPRanges,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_region_codes
 	SrcRegionCodes []string `json:"srcRegionCodes,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_threat_intelligences
 	SrcThreatIntelligences []string `json:"srcThreatIntelligences,omitempty"`
 }
 
 // +kcc:spec:proto=google.cloud.compute.v1.FirewallPolicyRule
 type ComputeFirewallPolicyRuleSpec struct {
-	
+
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.action
 	Action string `json:"action"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.description
 	Description *string `json:"description,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.direction
 	Direction string `json:"direction"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.disabled
 	Disabled *bool `json:"disabled,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.enable_logging
 	EnableLogging *bool `json:"enableLogging,omitempty"`
 
-	
 	FirewallPolicyRef *refs.ComputeFirewallPolicyRef `json:"firewallPolicyRef"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.match
 	Match *FirewallPolicyRuleMatcher `json:"match"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.priority
 	Priority int64 `json:"priority"`
 
@@ -125,11 +107,10 @@ type ComputeFirewallPolicyRuleSpec struct {
 // +kcc:status:proto=google.cloud.compute.v1.FirewallPolicyRule
 type ComputeFirewallPolicyRuleStatus struct {
 	commonv1alpha1.CommonStatus `json:",inline"`
-	
+
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.kind
 	Kind *string `json:"kind,omitempty"`
 
-	
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.rule_tuple_count
 	RuleTupleCount *int64 `json:"ruleTupleCount,omitempty"`
 }

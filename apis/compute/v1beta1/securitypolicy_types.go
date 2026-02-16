@@ -128,13 +128,10 @@ type SecurityPolicyRecaptchaOptionsConfig struct {
 }
 
 type RecaptchaEnterpriseKeyRef struct {
-	
 	External string `json:"external,omitempty"`
 
-	
 	Name string `json:"name,omitempty"`
 
-	
 	Namespace string `json:"namespace,omitempty"`
 }
 
@@ -314,7 +311,6 @@ type SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams struct {
 
 // ComputeSecurityPolicyStatus defines the config connector machine state of ComputeSecurityPolicy
 type ComputeSecurityPolicyStatus struct {
-	
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.

@@ -53,11 +53,31 @@ var (
 	// AddToScheme is a global function that registers this API group & version to a scheme
 	AddToScheme = SchemeBuilder.AddToScheme
 
-	GKEBackupBackupPlanGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(GKEBackupBackupPlan{}).Name(),
-	}
+	
+  	GKEBackupBackupGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(GKEBackupBackup{}).Name(),
+  	}
+  
+  	GKEBackupBackupPlanGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(GKEBackupBackupPlan{}).Name(),
+  	}
+  
+  	GKEBackupRestoreGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(GKEBackupRestore{}).Name(),
+  	}
+  
+  	GKEBackupRestorePlanGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(GKEBackupRestorePlan{}).Name(),
+  	}
+  
 
-	gkebackupAPIVersion = SchemeGroupVersion.String()
+  	gkebackupAPIVersion = SchemeGroupVersion.String()
 )

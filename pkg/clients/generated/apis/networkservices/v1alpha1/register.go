@@ -53,23 +53,31 @@ var (
 	// AddToScheme is a global function that registers this API group & version to a scheme
 	AddToScheme = SchemeBuilder.AddToScheme
 
-	NetworkServicesEdgeCacheKeysetGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheKeyset{}).Name(),
-	}
+	
+  	NetworkServicesEdgeCacheKeysetGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheKeyset{}).Name(),
+  	}
+  
+  	NetworkServicesEdgeCacheOriginGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheOrigin{}).Name(),
+  	}
+  
+  	NetworkServicesEdgeCacheServiceGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheService{}).Name(),
+  	}
+  
+  	NetworkServicesServiceBindingGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(NetworkServicesServiceBinding{}).Name(),
+  	}
+  
 
-	NetworkServicesEdgeCacheOriginGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheOrigin{}).Name(),
-	}
-
-	NetworkServicesEdgeCacheServiceGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(NetworkServicesEdgeCacheService{}).Name(),
-	}
-
-	networkservicesAPIVersion = SchemeGroupVersion.String()
+  	networkservicesAPIVersion = SchemeGroupVersion.String()
 )

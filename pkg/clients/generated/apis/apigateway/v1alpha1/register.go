@@ -53,23 +53,19 @@ var (
 	// AddToScheme is a global function that registers this API group & version to a scheme
 	AddToScheme = SchemeBuilder.AddToScheme
 
-	APIGatewayAPIGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(APIGatewayAPI{}).Name(),
-	}
+	
+  	APIGatewayAPIConfigGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(APIGatewayAPIConfig{}).Name(),
+  	}
+  
+  	APIGatewayGatewayGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(APIGatewayGateway{}).Name(),
+  	}
+  
 
-	APIGatewayAPIConfigGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(APIGatewayAPIConfig{}).Name(),
-	}
-
-	APIGatewayGatewayGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(APIGatewayGateway{}).Name(),
-	}
-
-	apigatewayAPIVersion = SchemeGroupVersion.String()
+  	apigatewayAPIVersion = SchemeGroupVersion.String()
 )

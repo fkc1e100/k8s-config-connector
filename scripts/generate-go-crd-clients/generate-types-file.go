@@ -262,6 +262,7 @@ func checkAndCreateFolder(dir string) {
 }
 
 func constructResourceDefinitions(crdsPath, crdFile string) []*resourceDefinition {
+	fmt.Printf("Processing CRD file: %s\n", crdFile)
 	crdFilePath, err := filepath.Abs(path.Join(crdsPath, crdFile))
 	if err != nil {
 		log.Fatalf("error getting the absolute representation of path for directory '%v': %v", crdFile, err)
@@ -535,10 +536,15 @@ func formatType(desc fielddesc.FieldDescription, isRef, isSec, isIAMRef bool) st
 			var goType string
 			if valueType == "object" {
 				goType = strings.Title(desc.ShortName)
+			} else if valueType == "any" {
+				goType = "apiextensionsv1.JSON"
 			} else {
 				goType = formatToGoLiteral(valueType)
 			}
 			return fmt.Sprintf("map[string]%v", goType)
+		}
+		if desc.Type == "schemaless" {
+			return "apiextensionsv1.JSON"
 		}
 		return desc.Type
 	}

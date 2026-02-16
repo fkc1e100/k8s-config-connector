@@ -53,35 +53,43 @@ var (
 	// AddToScheme is a global function that registers this API group & version to a scheme
 	AddToScheme = SchemeBuilder.AddToScheme
 
-	LoggingLogBucketGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(LoggingLogBucket{}).Name(),
-	}
+	
+  	LoggingLinkGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLink{}).Name(),
+  	}
+  
+  	LoggingLogBucketGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLogBucket{}).Name(),
+  	}
+  
+  	LoggingLogExclusionGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLogExclusion{}).Name(),
+  	}
+  
+  	LoggingLogMetricGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLogMetric{}).Name(),
+  	}
+  
+  	LoggingLogSinkGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLogSink{}).Name(),
+  	}
+  
+  	LoggingLogViewGVK = schema.GroupVersionKind{
+  		Group:   SchemeGroupVersion.Group,
+  		Version: SchemeGroupVersion.Version,
+  		Kind:    reflect.TypeOf(LoggingLogView{}).Name(),
+  	}
+  
 
-	LoggingLogExclusionGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(LoggingLogExclusion{}).Name(),
-	}
-
-	LoggingLogMetricGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(LoggingLogMetric{}).Name(),
-	}
-
-	LoggingLogSinkGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(LoggingLogSink{}).Name(),
-	}
-
-	LoggingLogViewGVK = schema.GroupVersionKind{
-		Group:   SchemeGroupVersion.Group,
-		Version: SchemeGroupVersion.Version,
-		Kind:    reflect.TypeOf(LoggingLogView{}).Name(),
-	}
-
-	loggingAPIVersion = SchemeGroupVersion.String()
+  	loggingAPIVersion = SchemeGroupVersion.String()
 )

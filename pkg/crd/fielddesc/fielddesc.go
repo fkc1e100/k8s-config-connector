@@ -134,7 +134,6 @@ func objectToDescription(props apiextensions.JSONSchemaProps, parent FieldDescri
 			panic(fmt.Sprintf("objectToDescription: unsupported map type in %+v, only support maps of boolean, integer, string, number, and object types", props.AdditionalProperties.Schema))
 		}
 
-		fd.Type = fmt.Sprintf("map (key: string, value: %v)", valueType)
 		if valueType != "object" {
 			return fd
 		}

@@ -1,4 +1,4 @@
-# Copyright 2025 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -229,7 +229,7 @@ spec:
                 properties:
                   assistiveExperiencesEnabled:
                     description: Whether assistive experiences are enabled for this
-                      AlloyDB instance. DEPRECATED - This field is no longer in use.
+                      AlloyDB instance.
                     type: boolean
                   enabled:
                     description: Observability feature status for an instance. This
@@ -259,8 +259,7 @@ spec:
                     type: boolean
                   trackClientAddress:
                     description: Track client address for an instance. If not set,
-                      default value is "off". DEPRECATED - This field is no longer
-                      in use.
+                      default value is "off".
                     type: boolean
                   trackWaitEvents:
                     description: Track wait events during query execution for an instance.
@@ -602,7 +601,7 @@ spec:
                 properties:
                   assistiveExperiencesEnabled:
                     description: Whether assistive experiences are enabled for this
-                      AlloyDB instance. DEPRECATED - This field is no longer in use.
+                      AlloyDB instance.
                     type: boolean
                   enabled:
                     description: Observability feature status for an instance. This
@@ -632,8 +631,7 @@ spec:
                     type: boolean
                   trackClientAddress:
                     description: Track client address for an instance. If not set,
-                      default value is "off". DEPRECATED - This field is no longer
-                      in use.
+                      default value is "off".
                     type: boolean
                   trackWaitEvents:
                     description: Track wait events during query execution for an instance.

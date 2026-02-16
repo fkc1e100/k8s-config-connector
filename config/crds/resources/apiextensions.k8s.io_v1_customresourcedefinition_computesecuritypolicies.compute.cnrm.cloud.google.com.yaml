@@ -145,14 +145,10 @@ spec:
                       - external
                     properties:
                       external:
-                        description: The value of an externally managed RecaptchaEnterpriseKey
-                          resource.
                         type: string
                       name:
-                        description: The name of a RecaptchaEnterpriseKey resource.
                         type: string
                       namespace:
-                        description: The namespace of a RecaptchaEnterpriseKey resource.
                         type: string
                     type: object
                 required:
@@ -579,8 +575,6 @@ spec:
               machine state of ComputeSecurityPolicy
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:

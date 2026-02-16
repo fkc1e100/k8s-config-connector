@@ -62,30 +62,16 @@ spec:
           spec:
             properties:
               action:
-                description: The Action to perform when the client connection triggers
-                  the rule. Valid actions are "allow", "deny" and "goto_next".
                 type: string
               description:
-                description: An optional description for this resource.
                 type: string
               direction:
-                description: 'The direction in which this rule applies. Possible values:
-                  INGRESS, EGRESS'
                 type: string
               disabled:
-                description: Denotes whether the firewall policy rule is disabled.
-                  When set to true, the firewall policy rule is not enforced and traffic
-                  behaves as if it did not exist. If this is unspecified, the firewall
-                  policy rule will be enabled.
                 type: boolean
               enableLogging:
-                description: 'Denotes whether to enable logging for a particular rule.
-                  If logging is enabled, logs will be exported to the configured export
-                  destination in Stackdriver. Logs may be exported to BigQuery or
-                  Pub/Sub. Note: you cannot enable logging on "goto_next" rules.'
                 type: boolean
               firewallPolicyRef:
-                description: Immutable.
                 oneOf:
                 - not:
                     required:
@@ -114,61 +100,33 @@ spec:
                     type: string
                 type: object
               match:
-                description: A match condition that incoming traffic is evaluated
-                  against. If it evaluates to true, the corresponding 'action' is
-                  enforced.
                 properties:
                   destAddressGroups:
-                    description: Address groups which should be matched against the
-                      traffic destination. Maximum number of destination address groups
-                      is 10. Destination address groups is only supported in Egress
-                      rules.
                     items:
                       type: string
                     type: array
                   destFqdns:
-                    description: Domain names that will be used to match against the
-                      resolved domain name of destination of traffic. Can only be
-                      specified if DIRECTION is egress.
                     items:
                       type: string
                     type: array
                   destIPRanges:
-                    description: CIDR IP address range. Maximum number of destination
-                      CIDR IP ranges allowed is 256.
                     items:
                       type: string
                     type: array
                   destRegionCodes:
-                    description: The Unicode country codes whose IP addresses will
-                      be used to match against the source of traffic. Can only be
-                      specified if DIRECTION is egress.
                     items:
                       type: string
                     type: array
                   destThreatIntelligences:
-                    description: Name of the Google Cloud Threat Intelligence list.
                     items:
                       type: string
                     type: array
                   layer4Configs:
-                    description: Pairs of IP protocols and ports that the rule should
-                      match.
                     items:
                       properties:
                         ipProtocol:
-                          description: The IP protocol to which this rule applies.
-                            The protocol type is required when creating a firewall
-                            rule. This value can either be one of the following well
-                            known protocol strings (`tcp`, `udp`, `icmp`, `esp`, `ah`,
-                            `ipip`, `sctp`), or the IP protocol number.
                           type: string
                         ports:
-                          description: 'An optional list of ports to which this rule
-                            applies. This field is only applicable for UDP or TCP
-                            protocol. Each entry must be either an integer or a range.
-                            If not specified, this rule applies to connections through
-                            any port. Example inputs include: ``.'
                           items:
                             type: string
                           type: array
@@ -177,34 +135,22 @@ spec:
                       type: object
                     type: array
                   srcAddressGroups:
-                    description: Address groups which should be matched against the
-                      traffic source. Maximum number of source address groups is 10.
-                      Source address groups is only supported in Ingress rules.
                     items:
                       type: string
                     type: array
                   srcFqdns:
-                    description: Domain names that will be used to match against the
-                      resolved domain name of source of traffic. Can only be specified
-                      if DIRECTION is ingress.
                     items:
                       type: string
                     type: array
                   srcIPRanges:
-                    description: CIDR IP address range. Maximum number of source CIDR
-                      IP ranges allowed is 256.
                     items:
                       type: string
                     type: array
                   srcRegionCodes:
-                    description: The Unicode country codes whose IP addresses will
-                      be used to match against the source of traffic. Can only be
-                      specified if DIRECTION is ingress.
                     items:
                       type: string
                     type: array
                   srcThreatIntelligences:
-                    description: Name of the Google Cloud Threat Intelligence list.
                     items:
                       type: string
                     type: array
@@ -212,10 +158,6 @@ spec:
                 - layer4Configs
                 type: object
               priority:
-                description: Immutable. An integer indicating the priority of a rule
-                  in the list. The priority must be a positive value between 0 and
-                  2147483647. Rules are evaluated from highest to lowest priority
-                  where 0 is the highest priority and 2147483647 is the lowest prority.
                 format: int64
                 type: integer
               targetResources:
@@ -316,8 +258,6 @@ spec:
                   in GCP.
                 type: string
               kind:
-                description: Type of the resource. Always `compute#firewallPolicyRule`
-                  for firewall policy rules
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource
@@ -328,8 +268,6 @@ spec:
                 format: int64
                 type: integer
               ruleTupleCount:
-                description: Calculation of the complexity of a single firewall policy
-                  rule.
                 format: int64
                 type: integer
             type: object

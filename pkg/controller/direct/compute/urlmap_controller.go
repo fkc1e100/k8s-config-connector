@@ -177,12 +177,7 @@ func (a *computeURLMapAdapter) Create(ctx context.Context, createOp *directbase.
 		return fmt.Errorf("getting ComputeURLMap %q: %w", a.id, err)
 	}
 
-	status := &krm.ComputeURLMapStatus{
-		CreationTimestamp: created.CreationTimestamp,
-		Fingerprint:       created.Fingerprint,
-		MapId:             int64PtrFromUint64Ptr(created.Id),
-		SelfLink:          created.SelfLink,
-	}
+	status := ComputeURLMapStatus_v1beta1_FromProto(mapCtx, created)
 	return createOp.UpdateStatus(ctx, status, nil)
 }
 
@@ -261,12 +256,7 @@ func (a *computeURLMapAdapter) Update(ctx context.Context, updateOp *directbase.
 		return fmt.Errorf("getting ComputeURLMap %q: %w", a.id.ResourceID, err)
 	}
 
-	status := &krm.ComputeURLMapStatus{
-		CreationTimestamp: updated.CreationTimestamp,
-		Fingerprint:       updated.Fingerprint,
-		MapId:             int64PtrFromUint64Ptr(updated.Id),
-		SelfLink:          updated.SelfLink,
-	}
+	status := ComputeURLMapStatus_v1beta1_FromProto(mapCtx, updated)
 	return updateOp.UpdateStatus(ctx, status, nil)
 }
 

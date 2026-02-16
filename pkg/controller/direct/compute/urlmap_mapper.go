@@ -842,3 +842,27 @@ func HttpQueryParameterMatch_ToProto(mapCtx *direct.MapContext, in *krm.UrlmapQu
 	out.RegexMatch = in.RegexMatch
 	return out
 }
+
+func ComputeURLMapStatus_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.UrlMap) *krm.ComputeURLMapStatus {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ComputeURLMapStatus{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.Fingerprint = in.Fingerprint
+	out.MapId = int64PtrFromUint64Ptr(in.Id)
+	out.SelfLink = in.SelfLink
+	return out
+}
+
+func ComputeURLMapStatus_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.ComputeURLMapStatus) *pb.UrlMap {
+	if in == nil {
+		return nil
+	}
+	out := &pb.UrlMap{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.Fingerprint = in.Fingerprint
+	out.Id = uint64PtrFromInt64Ptr(in.MapId)
+	out.SelfLink = in.SelfLink
+	return out
+}

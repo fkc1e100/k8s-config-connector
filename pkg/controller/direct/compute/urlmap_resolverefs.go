@@ -16,13 +16,9 @@ package compute
 
 import (
 	"context"
-	"fmt"
 
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/clients/generated/apis/k8s/v1alpha1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -85,43 +81,6 @@ func resolveComputeURLMapRefs(ctx context.Context, reader client.Reader, obj *kr
 		}
 	}
 
-	return nil
-}
-
-func resolveResourceRef(ctx context.Context, reader client.Reader, obj client.Object, ref *v1alpha1.ResourceRef, gvk schema.GroupVersionKind, targetField string) error {
-	if ref == nil {
-		return nil
-	}
-
-	if ref.External != "" {
-		if ref.Name != "" {
-			return fmt.Errorf("cannot specify both name and external on reference")
-		}
-		return nil
-	}
-
-	if ref.Name == "" {
-		return fmt.Errorf("must specify either name or external on reference")
-	}
-
-	key := types.NamespacedName{
-		Namespace: ref.Namespace,
-		Name:      ref.Name,
-	}
-	if key.Namespace == "" {
-		key.Namespace = obj.GetNamespace()
-	}
-
-	resource, err := resolveResourceName(ctx, reader, key, gvk)
-	if err != nil {
-		return err
-	}
-
-	val, _, err := unstructured.NestedString(resource.Object, "status", targetField)
-	if err != nil || val == "" {
-		return fmt.Errorf("cannot get %s for referenced %s %v (status.%s is empty)", targetField, resource.GetKind(), resource.GetNamespace(), targetField)
-	}
-	ref.External = val
 	return nil
 }
 

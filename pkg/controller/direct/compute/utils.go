@@ -20,10 +20,12 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/clients/generated/apis/k8s/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/k8s"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -115,4 +117,49 @@ func int64PtrFromUint64Ptr(v *uint64) *int64 {
 	}
 	val := int64(*v)
 	return &val
+}
+
+func uint64PtrFromInt64Ptr(v *int64) *uint64 {
+	if v == nil {
+		return nil
+	}
+	val := uint64(*v)
+	return &val
+}
+
+func resolveResourceRef(ctx context.Context, reader client.Reader, obj client.Object, ref *v1alpha1.ResourceRef, gvk schema.GroupVersionKind, targetField string) error {
+	if ref == nil {
+		return nil
+	}
+
+	if ref.External != "" {
+		if ref.Name != "" {
+			return fmt.Errorf("cannot specify both name and external on reference")
+		}
+		return nil
+	}
+
+	if ref.Name == "" {
+		return fmt.Errorf("must specify either name or external on reference")
+	}
+
+	key := types.NamespacedName{
+		Namespace: ref.Namespace,
+		Name:      ref.Name,
+	}
+	if key.Namespace == "" {
+		key.Namespace = obj.GetNamespace()
+	}
+
+	resource, err := resolveResourceName(ctx, reader, key, gvk)
+	if err != nil {
+		return err
+	}
+
+	val, _, err := unstructured.NestedString(resource.Object, "status", targetField)
+	if err != nil || val == "" {
+		return fmt.Errorf("cannot get %s for referenced %s %v (status.%s is empty)", targetField, resource.GetKind(), resource.GetNamespace(), targetField)
+	}
+	ref.External = val
+	return nil
 }

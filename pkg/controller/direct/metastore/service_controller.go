@@ -221,13 +221,13 @@ func (a *MetastoreServiceAdapter) Update(ctx context.Context, updateOp *directba
 		paths = append(paths, "maintenance_window")
 	}
 	if desired.Spec.HiveMetastoreConfig != nil && !reflect.DeepEqual(resource.GetHiveMetastoreConfig(), a.actual.GetHiveMetastoreConfig()) {
-		if !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetConfigOverrides(), a.actual.GetHiveMetastoreConfig().GetConfigOverrides()) {
+		if desired.Spec.HiveMetastoreConfig.ConfigOverrides != nil && !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetConfigOverrides(), a.actual.GetHiveMetastoreConfig().GetConfigOverrides()) {
 			paths = append(paths, "hive_metastore_config.config_overrides")
 		}
-		if !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetKerberosConfig(), a.actual.GetHiveMetastoreConfig().GetKerberosConfig()) {
+		if desired.Spec.HiveMetastoreConfig.KerberosConfig != nil && !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetKerberosConfig(), a.actual.GetHiveMetastoreConfig().GetKerberosConfig()) {
 			paths = append(paths, "hive_metastore_config.kerberos_config")
 		}
-		if !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetAuxiliaryVersions(), a.actual.GetHiveMetastoreConfig().GetAuxiliaryVersions()) {
+		if desired.Spec.HiveMetastoreConfig.AuxiliaryVersions != nil && !reflect.DeepEqual(resource.GetHiveMetastoreConfig().GetAuxiliaryVersions(), a.actual.GetHiveMetastoreConfig().GetAuxiliaryVersions()) {
 			paths = append(paths, "hive_metastore_config.auxiliary_versions")
 		}
 		// Endpoint protocol is output_only

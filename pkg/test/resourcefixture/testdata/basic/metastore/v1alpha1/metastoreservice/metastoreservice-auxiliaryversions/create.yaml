@@ -8,3 +8,6 @@ spec:
     external: ${projectId}
   hiveMetastoreConfig:
     version: "3.1.2"
+    auxiliaryVersions:
+      aux-1:
+        version: "2.3.6"

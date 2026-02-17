@@ -177,7 +177,7 @@ X-Xss-Protection: 0
 
 ---
 
-PATCH https://metastore.googleapis.com/v1/projects/${projectId}/locations/us-central1/services/metastoreservice-aux-${uniqueId}?%24alt=json%3Benum-encoding%3Dint&updateMask=hiveMetastoreConfig.kerberosConfig
+PATCH https://metastore.googleapis.com/v1/projects/${projectId}/locations/us-central1/services/metastoreservice-aux-${uniqueId}?%24alt=json%3Benum-encoding%3Dint&updateMask=hiveMetastoreConfig.auxiliaryVersions
 Content-Type: application/json
 User-Agent: kcc/${kccVersion} (+https://github.com/GoogleCloudPlatform/k8s-config-connector) kcc/controller-manager/${kccVersion}
 X-Goog-Request-Params: service.name=projects%2F${projectId}%2Flocations%2Fus-central1%2Fservices%2Fmetastoreservice-aux-${uniqueId}
@@ -259,6 +259,12 @@ X-Xss-Protection: 0
     "hiveMetastoreConfig": {
       "auxiliaryVersions": {
         "aux-1": {
+          "configOverrides": {
+            "hive.metastore.warehouse.dir": "/tmp/warehouse"
+          },
+          "version": "2.3.6"
+        },
+        "aux-2": {
           "version": "2.3.6"
         }
       },
@@ -311,6 +317,12 @@ X-Xss-Protection: 0
   "hiveMetastoreConfig": {
     "auxiliaryVersions": {
       "aux-1": {
+        "configOverrides": {
+          "hive.metastore.warehouse.dir": "/tmp/warehouse"
+        },
+        "version": "2.3.6"
+      },
+      "aux-2": {
         "version": "2.3.6"
       }
     },

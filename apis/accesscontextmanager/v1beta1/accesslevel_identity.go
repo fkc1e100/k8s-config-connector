@@ -36,7 +36,7 @@ const (
 var _ identity.Identity = &AccessLevelIdentity{}
 var _ identity.Resource = &AccessContextManagerAccessLevel{}
 
-var parser = regexp.MustCompile(`((//)?accesscontextmanager.googleapis.com)?/?accessPolicies/(?P<accessPolicies>[[:alpha:]]+)/accessLevels/(?P<accessLevels>[[:alpha:]]+)`)
+var parser = regexp.MustCompile(`^((//)?accesscontextmanager.googleapis.com)?/?accessPolicies/(?P<accessPolicies>[a-zA-Z0-9_-]+)/accessLevels/(?P<accessLevels>[a-zA-Z0-9_-]+)$`)
 
 // AccessLevelIdentity represents the identity of an accessLevel.
 // +k8s:deepcopy-gen=false

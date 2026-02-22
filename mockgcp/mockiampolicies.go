@@ -71,18 +71,22 @@ func (m *mockIAMPolicies) getIAMPolicy(resourcePath string) (*iampb.Policy, erro
 	policy = proto.Clone(policy).(*iampb.Policy)
 
 	// Sort for determinism
-	for _, binding := range policy.Bindings {
-		sort.Strings(binding.Members)
-	}
-	sort.Slice(policy.Bindings, func(i, j int) bool {
-		return policy.Bindings[i].Role < policy.Bindings[j].Role
-	})
+	sortPolicy(policy)
 
 	if policy.Etag == nil {
 		policy.Etag = computeEtag(policy)
 	}
 
 	return policy, nil
+}
+
+func sortPolicy(policy *iampb.Policy) {
+	for _, binding := range policy.Bindings {
+		sort.Strings(binding.Members)
+	}
+	sort.Slice(policy.Bindings, func(i, j int) bool {
+		return policy.Bindings[i].Role < policy.Bindings[j].Role
+	})
 }
 
 func (m *mockIAMPolicies) serveGetIAMPolicy(resourcePath string) (*http.Response, error) {
@@ -127,6 +131,9 @@ func (m *mockIAMPolicies) serveSetIAMPolicy(resourcePath string, httpRequest *ht
 	if !hasConditions {
 		request.Policy.Version = 1
 	}
+
+	// Sort for determinism
+	sortPolicy(request.Policy)
 
 	request.Policy.Etag = computeEtag(request.Policy)
 	m.policies[resourcePath] = request.Policy

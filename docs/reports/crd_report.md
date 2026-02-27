@@ -278,6 +278,8 @@
 | gkehub.cnrm.cloud.google.com                  | GKEHubFeatureMembership                         | False        | True        | False  | Direct     |
 | gkehub.cnrm.cloud.google.com                  | GKEHubFeature                                   | False        | True        | False  | DCL        |
 | gkehub.cnrm.cloud.google.com                  | GKEHubMembership                                | False        | True        | False  | DCL        |
+| gkehub.cnrm.cloud.google.com                  | GKEHubNamespace                                 | False        | True        | False  | Direct     |
+| gkehub.cnrm.cloud.google.com                  | GKEHubScope                                     | False        | True        | False  | Direct     |
 | healthcare.cnrm.cloud.google.com              | HealthcareConsentStore                          | True         | False       | False  | Terraform  |
 | healthcare.cnrm.cloud.google.com              | HealthcareDataset                               | True         | False       | False  | Terraform  |
 | healthcare.cnrm.cloud.google.com              | HealthcareDICOMStore                            | True         | False       | False  | Terraform  |

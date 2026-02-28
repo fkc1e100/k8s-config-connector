@@ -1,0 +1,15 @@
+I have verified the BigtableSchemaBundle implementation. The build and unit tests for the controller and mappers are passing. The resource correctly follows the pattern projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schema_bundle} as requested.
+
+Since I don't have permission to push directly to your branch, please pull the latest squashed commit from my fork:
+
+```bash
+git fetch https://github.com/codebot-robot/k8s-config-connector.git feat/bigtable-schemabundle
+git merge FETCH_HEAD
+git push origin feat/bigtable-schemabundle
+```
+
+This commit includes:
+- BigtableSchemaBundle CRD in v1alpha1.
+- Direct controller implementation.
+- Mock GCP implementation for SchemaBundle methods.
+- Comprehensive mapper tests.

@@ -17,6 +17,8 @@ kind: ContainerNodePool
 metadata:
   name: nodepool-sample-${uniqueId}
 spec:
+  clusterRef:
+    name: cluster-nodepool-${uniqueId}
   location: us-central1-a
   initialNodeCount: 1
   nodeConfig:
@@ -26,8 +28,12 @@ spec:
       imageMaximumGcAge: "2h"
       imageGcLowThresholdPercent: 60
       imageGcHighThresholdPercent: 70
+      cpuCfsQuota: false
+      cpuCfsQuotaPeriod: "200ms"
+      podPidsLimit: 2048
+      containerLogMaxFiles: 10
+      containerLogMaxSize: "20Mi"
+      maxParallelImagePulls: 20
     linuxNodeConfig:
       sysctls:
         net.core.somaxconn: "2048"
-  clusterRef:
-    name: cluster-sample-${uniqueId}

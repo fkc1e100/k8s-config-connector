@@ -17,7 +17,7 @@ kind: ContainerCluster
 metadata:
   annotations:
     cnrm.cloud.google.com/reconcile-interval-in-seconds: "0"
-  name: cluster-sample-${uniqueId}
+  name: cluster-nodepool-${uniqueId}
 spec:
   location: us-central1-a
   initialNodeCount: 1

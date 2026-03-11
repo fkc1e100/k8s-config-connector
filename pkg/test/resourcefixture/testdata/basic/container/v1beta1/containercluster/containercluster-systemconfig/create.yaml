@@ -26,6 +26,12 @@ spec:
       imageMaximumGcAge: "1h"
       imageGcLowThresholdPercent: 70
       imageGcHighThresholdPercent: 80
+      cpuCfsQuota: true
+      cpuCfsQuotaPeriod: "100ms"
+      podPidsLimit: 1024
+      containerLogMaxFiles: 5
+      containerLogMaxSize: "10Mi"
+      maxParallelImagePulls: 10
     linuxNodeConfig:
       sysctls:
         net.core.somaxconn: "1024"

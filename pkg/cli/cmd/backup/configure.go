@@ -16,11 +16,11 @@ package backup
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"text/template"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/cli/powertools/kubecli"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/version"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -28,12 +28,15 @@ import (
 )
 
 type configureOptions struct {
+	kubecli.ClusterOptions
 	cluster        string
 	location       string
 	bucket         string
 	bucketLocation string
 	frequency      string
 	project        string
+	clusterProject string
+	namespace      string
 }
 
 func NewConfigureCmd() *cobra.Command {
@@ -43,26 +46,35 @@ func NewConfigureCmd() *cobra.Command {
 		Use:   "configure",
 		Short: "Configure scheduled backups for Config Connector",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runConfigure(cmd.Context(), options)
+			return runConfigure(cmd, options)
 		},
 	}
 
+	options.ClusterOptions.AddFlags(cmd)
 	cmd.Flags().StringVar(&options.cluster, "cluster", "", "Name of the cluster")
 	cmd.Flags().StringVar(&options.location, "location", "", "Region of the cluster")
 	cmd.Flags().StringVar(&options.bucket, "bucket", "", "GCS bucket name for backups")
 	cmd.Flags().StringVar(&options.bucketLocation, "bucket-location", "us-central1", "GCS bucket location")
 	cmd.Flags().StringVar(&options.frequency, "frequency", "daily", "Backup frequency (e.g. daily)")
-	cmd.Flags().StringVar(&options.project, "project", "", "GCP project ID")
+	cmd.Flags().StringVar(&options.project, "project", "", "GCP project ID where the backup bucket/SA reside")
+	cmd.Flags().StringVar(&options.clusterProject, "cluster-project", "", "GCP project ID where the cluster resides (for Workload Identity). Defaults to --project if not specified.")
+	cmd.Flags().StringVar(&options.namespace, "namespace", "cnrm-system", "Namespace where Config Connector is installed")
 
 	return cmd
 }
 
-func runConfigure(ctx context.Context, options *configureOptions) error {
+func runConfigure(cmd *cobra.Command, options *configureOptions) error {
+	ctx := cmd.Context()
 	if options.project == "" {
 		return fmt.Errorf("--project is required")
 	}
 	if options.bucket == "" {
 		return fmt.Errorf("--bucket is required")
+	}
+
+	clusterProject := options.clusterProject
+	if clusterProject == "" {
+		clusterProject = options.project
 	}
 
 	schedule := "0 0 * * *"
@@ -79,15 +91,23 @@ func runConfigure(ctx context.Context, options *configureOptions) error {
 	}
 
 	data := struct {
-		ProjectID      string
-		Bucket         string
-		BucketLocation string
-		Schedule       string
+		ProjectID        string
+		ClusterProjectID string
+		Cluster          string
+		Bucket           string
+		BucketLocation   string
+		Schedule         string
+		Namespace        string
+		Version          string
 	}{
-		ProjectID:      options.project,
-		Bucket:         options.bucket,
-		BucketLocation: options.bucketLocation,
-		Schedule:       schedule,
+		ProjectID:        options.project,
+		ClusterProjectID: clusterProject,
+		Cluster:          options.cluster,
+		Bucket:           options.bucket,
+		BucketLocation:   options.bucketLocation,
+		Schedule:         schedule,
+		Namespace:        options.namespace,
+		Version:          version.GetVersion(),
 	}
 
 	tmpl, err := template.New("configure").Parse(configureTemplate)
@@ -100,12 +120,12 @@ func runConfigure(ctx context.Context, options *configureOptions) error {
 		return fmt.Errorf("executing template: %w", err)
 	}
 
-	kubeClient, err := kubecli.NewClient(ctx, kubecli.ClusterOptions{})
+	kubeClient, err := kubecli.NewClient(ctx, options.ClusterOptions)
 	if err != nil {
 		return fmt.Errorf("creating kubernetes client: %w", err)
 	}
 
-	fmt.Println("Applying backup configuration resources...")
+	fmt.Fprintln(cmd.OutOrStdout(), "Applying backup configuration resources...")
 
 	parts := bytes.Split(buf.Bytes(), []byte("\n---\n"))
 	for _, part := range parts {
@@ -121,10 +141,10 @@ func runConfigure(ctx context.Context, options *configureOptions) error {
 		if err := kubeClient.Patch(ctx, obj, client.Apply, client.FieldOwner("config-connector-backup"), client.ForceOwnership); err != nil {
 			return fmt.Errorf("applying resource %s/%s (%s): %w", obj.GetNamespace(), obj.GetName(), obj.GetKind(), err)
 		}
-		fmt.Printf("- Applied %s/%s (%s)\n", obj.GetNamespace(), obj.GetName(), obj.GetKind())
+		fmt.Fprintf(cmd.OutOrStdout(), "- Applied %s/%s (%s)\n", obj.GetNamespace(), obj.GetName(), obj.GetKind())
 	}
 
-	fmt.Println("\nBackup configuration successful.")
+	fmt.Fprintln(cmd.OutOrStdout(), "\nBackup configuration successful.")
 	return nil
 }
 
@@ -133,7 +153,7 @@ apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
 metadata:
   name: {{.Bucket}}
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 spec:
   location: {{.BucketLocation}}
 ---
@@ -141,7 +161,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMServiceAccount
 metadata:
   name: cnrm-backup
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 spec:
   displayName: Config Connector Backup Service Account
 ---
@@ -149,9 +169,9 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
   name: cnrm-backup-wi
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 spec:
-  member: serviceAccount:{{.ProjectID}}.svc.id.goog[cnrm-system/cnrm-backup-manager]
+  member: serviceAccount:{{.ClusterProjectID}}.svc.id.goog[{{.Namespace}}/cnrm-backup-manager]
   role: roles/iam.workloadIdentityUser
   resourceRef:
     apiVersion: iam.cnrm.cloud.google.com/v1beta1
@@ -162,10 +182,10 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
   name: cnrm-backup-bucket-admin
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 spec:
   member: serviceAccount:cnrm-backup@{{.ProjectID}}.iam.gserviceaccount.com
-  role: roles/storage.admin
+  role: roles/storage.objectAdmin
   resourceRef:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
@@ -175,7 +195,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cnrm-backup-manager
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
   annotations:
     iam.gke.io/gcp-service-account: cnrm-backup@{{.ProjectID}}.iam.gserviceaccount.com
 ---
@@ -199,13 +219,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: cnrm-backup-manager
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: cnrm-backup-daily
-  namespace: cnrm-system
+  namespace: {{.Namespace}}
 spec:
   schedule: "{{.Schedule}}"
   jobTemplate:
@@ -221,7 +241,7 @@ spec:
           serviceAccountName: cnrm-backup-manager
           containers:
           - name: backup
-            image: gcr.io/gke-release/cnrm/controller:1.143.0
-            command: ["config-connector", "backup", "create", "--bucket", "{{.Bucket}}", "--project", "{{.ProjectID}}"]
+            image: gcr.io/gke-release/cnrm/config-connector-cli:{{.Version}}
+            command: ["config-connector", "backup", "create", "--bucket", "{{.Bucket}}", "--project", "{{.ProjectID}}", "--namespace", "{{.Namespace}}"{{if .Cluster}}, "--cluster", "{{.Cluster}}"{{end}}]
           restartPolicy: OnFailure
 `

@@ -130,7 +130,10 @@ sed -i -E "s/\"?0.0.0-dev\"?/\"${VERSION}\"/g" ${AUTOPILOT_NAMESPACED_BUNDLE_DIR
 # Add the sample YAML files and applications to tarball
 cp -r config/samples/ ${BUNDLE_DIR}/
 
-tar -czvf ${DIST}/release-bundle.tar.gz -C ${BUNDLE_DIR}/ .
+# Tar release bundle with versioned S3NS name
+BUNDLE_TARBALL="${DIST}/s3ns-kcc-release-bundle-${VERSION}.tar.gz"
+tar -czvf "${BUNDLE_TARBALL}" -C ${BUNDLE_DIR}/ .
+ln -sf "s3ns-kcc-release-bundle-${VERSION}.tar.gz" "${DIST}/release-bundle.tar.gz"
 
 # Remove the temporary kustomization.yaml file we wrote
 rm -f ${REPO_ROOT}/kustomization.yaml

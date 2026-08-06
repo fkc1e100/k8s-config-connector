@@ -1,0 +1,67 @@
+# Copyright 2026 S3NS / Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: s3ns-tpc-ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: ["master", "s3ns-*"]
+  push:
+    branches: ["master", "s3ns-*"]
+
+jobs:
+  universe-unit-tests:
+    name: "Run S3NS Universe Unit Tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: "Run Go Tests for pkg/universe"
+        run: |
+          go test -v ./pkg/universe/...
+
+  crd-allowlist-check:
+    name: "Validate S3NS CRD Allowlist Count"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Verify Pruned CRD Count"
+        run: |
+          count=$(ls -1 config/crds/resources/*.yaml | wc -l)
+          echo "Current CRD count: $count"
+          if [ "$count" -gt 45 ]; then
+            echo "ERROR: Unexpected CRD count ($count). S3NS fork should contain only supported CRDs (~40)."
+            exit 1
+          fi
+
+  tpc-universe-build-check:
+    name: "Compile Controller with S3NS Universe Settings"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: "Build Controller Manager Binary"
+        run: |
+          go build -o /dev/null ./cmd/cnrm-controller-manager
+        env:
+          GOOGLE_CLOUD_UNIVERSE_DOMAIN: "s3nsapis.fr"
+          WORKLOAD_IDENTITY_DOMAIN: "s3ns.svc.id.goog"

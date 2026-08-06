@@ -114,6 +114,10 @@ func New(ctx context.Context, config Config) (*tfschema.Provider, error) {
 	cfgMap["user_project_override"] = config.UserProjectOverride
 	cfgMap["billing_project"] = config.BillingProject
 
+	if universeDomain := universe.GetUniverseDomain(); universeDomain != "" && !universe.IsDefaultUniverse() {
+		cfgMap["universe_domain"] = universeDomain
+	}
+
 	schema := tfschema.InternalMap(googleProvider.Schema).CoreConfigSchema()
 	cfg := terraform.NewResourceConfigShimmed(krmtotf.MapToCtyVal(cfgMap, schema.ImpliedType()), schema)
 	if err := googleProvider.Configure(ctx, cfg); err != nil {

@@ -25,13 +25,13 @@ on:
       - '**'
       - '!experiments/**'
   push:
-    branches: ["master", "release-*"]
+    branches: ["master", "s3ns-*", "release-*"]
     paths:
       - '**'
       - '!experiments/**'
   merge_group:
     types: [checks_requested]
-    branches: ["master", "release-*"]
+    branches: ["master", "s3ns-*", "release-*"]
     paths:
       - '**'
       - '!experiments/**'

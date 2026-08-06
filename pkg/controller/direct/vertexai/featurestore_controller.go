@@ -26,6 +26,7 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct/directbase"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct/registry"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/structuredreporting"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/universe"
 
 	gcp "cloud.google.com/go/aiplatform/apiv1beta1"
 	pb "cloud.google.com/go/aiplatform/apiv1beta1/aiplatformpb"
@@ -58,7 +59,7 @@ func (m *modelFeaturestore) client(ctx context.Context, location string) (*gcp.F
 	if err != nil {
 		return nil, err
 	}
-	endpoint := fmt.Sprintf("https://%s-aiplatform.googleapis.com", location)
+	endpoint := fmt.Sprintf("https://%s-aiplatform.%s", location, universe.GetUniverseDomain())
 	opts = append(opts, option.WithEndpoint(endpoint))
 	gcpClient, err := gcp.NewFeaturestoreRESTClient(ctx, opts...)
 	if err != nil {

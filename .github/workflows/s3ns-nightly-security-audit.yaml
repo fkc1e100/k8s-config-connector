@@ -22,7 +22,7 @@ on:
 
 jobs:
   nightly-security-audit:
-    name: Nightly Sovereign Audit & Issue Generation
+    name: Nightly Sovereign Audit & Container Vulnerability Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -51,7 +51,23 @@ jobs:
             echo "violations_found=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create GitHub Issue on Audit Failure
+      - name: Build Controller Image for Audit
+        run: |
+          echo "Building local controller image for Trivy security scan..."
+          docker build -t kcc-s3ns-controller:audit -f dev/tasks/build-images/Dockerfile . || true
+
+      - name: Run Trivy Container Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        id: trivy_scan
+        with:
+          image-ref: 'kcc-s3ns-controller:audit'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Create GitHub Issue on Endpoint Violation
         if: steps.audit_endpoints.outputs.violations_found == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

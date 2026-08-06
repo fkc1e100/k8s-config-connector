@@ -1,42 +1,53 @@
-### The direct Config Connector guide is ready
+# S3NS Sovereign Kubernetes Config Connector (`kcc-s3ns`)
 
-We launched a major improvement to develope the Config Connector resources. This approach significantly enhances the reliability of the Config Connector object reconciliation and provides a more Kubernetes-native developing experience. Learn more in [the Direct resource development guide](./docs/develop-resources/).
+[![s3ns-tpc-ci](https://github.com/fkc1e100/kcc-s3ns/actions/workflows/s3ns-ci.yaml/badge.svg)](https://github.com/fkc1e100/kcc-s3ns/actions/workflows/s3ns-ci.yaml)
 
-# GCP Config Connector
+This repository ([`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns)) is a slimmed, sovereign-compliant fork of Google Cloud's **Kubernetes Config Connector (KCC)**, tailored specifically for **S3NS Trusted Private Cloud (TPC)** datacenters in France and applicable to international TPC environments (Germany, Canada, Japan).
 
-Config Connector is a Kubernetes add-on that allows customers to manage GCP
-resources, such as Cloud Spanner or Cloud Storage, through your cluster's API.
+---
 
-With Config Connector, now you can describe GCP resources declaratively using
-Kubernetes-style configuration. Config Connector will create any new GCP
-resources and update any existing ones to the state specified by your
-configuration, and continuously makes sure GCP is kept in sync. The same
-resource model is the basis of Istio, Knative, Kubernetes, and the Google Cloud
-Services Platform.
+## 🌟 Key Sovereign Capabilities
 
-As a result, developers can manage their whole application, including both its
-Kubernetes components as well as any GCP dependencies, using the same
-configuration, and more importantly **tooling**. For example, the same
-customization or templating tool can be used to manage test vs. production
-versions of an application across both Kubernetes and GCP.
+1. **Dynamic TPC Universe Domain Resolution (`s3nsapis.fr`)**:
+   - Automatically routes REST and gRPC API calls to sovereign endpoints (`storage.s3nsapis.fr`, `compute.s3nsapis.fr`, `sqladmin.s3nsapis.fr`).
+   - Driven by the generic `pkg/universe` module and configured via `GOOGLE_CLOUD_UNIVERSE_DOMAIN`.
 
-This repository contains full Config Connector source code. This includes
-controllers, CRDs, install bundles, and sample resource configurations.
+2. **Workload Identity Domain Suffix (`s3ns.svc.id.goog`)**:
+   - Integrates federated identity authentication using `WORKLOAD_IDENTITY_DOMAIN`.
 
-## Usage
+3. **Slimmed 40 CRD Service Catalog**:
+   - Pruned down from 464 upstream CRDs to **40 allowed S3NS resource kinds** (GKE Autopilot, Compute Engine, Storage, Cloud SQL, BigQuery, IAM, Secret Manager, Vertex AI).
+   - Enforces strict runtime allowlisting in `pkg/controller/registration/`.
 
-See https://cloud.google.com/config-connector/docs/overview.
+---
 
-See [Config Connector CLI](./docs/cli/README.md) for documentation on the `config-connector` command-line tool.
+## 🚀 Quickstart Deployment
 
-See
-[Choosing an installation type](https://cloud.google.com/config-connector/docs/concepts/installation-types)
-to decide how you want to install Config Connector.
+To deploy the slimmed S3NS KCC bundle on a GKE cluster:
 
-For simple starter examples, see the
-[Resource reference](https://cloud.google.com/config-connector/docs/reference/overview).
+```bash
+# Clone the repository
+git clone https://github.com/fkc1e100/kcc-s3ns.git
+cd kcc-s3ns
 
-## Contributing to Config Connector
+# Deploy 40 S3NS CRDs & cnrm-controller-manager with S3NS universe domain
+./scripts/deploy-s3ns-kcc.sh
+```
 
-Please refer to our [contribution guide](CONTRIBUTING.md) for more details.
+---
 
+## 📚 S3NS Documentation Suite
+
+Explore detailed guides in the [`docs/s3ns/`](docs/s3ns/README.md) directory:
+
+- 📖 **[S3NS Documentation Overview](docs/s3ns/README.md)**
+- 📋 **[Supported Service Catalog & 40 CRD Allowlist](docs/s3ns/supported-services.md)**
+- 🏗️ **[Technical Architecture & Endpoint Resolution](docs/s3ns/architecture.md)**
+- 🔄 **[Upstream Sync & Maintenance Guide](docs/s3ns/upstream-sync-guide.md)**
+- 🛠️ **[Direct Controller Developer Guide](docs/s3ns/dev-guide.md)**
+
+---
+
+## 🔄 Upstream Relationship
+
+This repository is forked from [`GoogleCloudPlatform/k8s-config-connector`](https://github.com/GoogleCloudPlatform/k8s-config-connector) (baseline release `v1.154.1`). Upstream updates are regularly synchronized via [`scripts/sync-upstream.sh`](scripts/sync-upstream.sh).

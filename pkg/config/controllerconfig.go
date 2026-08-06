@@ -23,6 +23,7 @@ import (
 	cloudresourcemanager "cloud.google.com/go/resourcemanager/apiv3"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/projects"
 	metricstransport "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/metrics/transport"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/universe"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"
 	ghttptransport "google.golang.org/api/transport/http"
@@ -143,10 +144,9 @@ func (c *ControllerConfig) RESTClientOptions(options ...RESTClientOption) ([]opt
 		opts = append(opts, option.WithQuotaProject(quotaProject))
 	}
 
-	// TODO: support endpoints?
-	// if m.config.Endpoint != "" {
-	// 	opts = append(opts, option.WithEndpoint(m.config.Endpoint))
-	// }
+	if universeDomain := universe.GetUniverseDomain(); universeDomain != "" && !universe.IsDefaultUniverse() {
+		opts = append(opts, option.WithUniverseDomain(universeDomain))
+	}
 
 	return opts, nil
 }
@@ -166,10 +166,9 @@ func (c *ControllerConfig) GRPCClientOptions() ([]option.ClientOption, error) {
 		opts = append(opts, option.WithGRPCDialOption(grpc.WithUnaryInterceptor(c.GRPCUnaryClientInterceptor)))
 	}
 
-	// TODO: support endpoints?
-	// if m.config.Endpoint != "" {
-	// 	opts = append(opts, option.WithEndpoint(m.config.Endpoint))
-	// }
+	if universeDomain := universe.GetUniverseDomain(); universeDomain != "" && !universe.IsDefaultUniverse() {
+		opts = append(opts, option.WithUniverseDomain(universeDomain))
+	}
 
 	return opts, nil
 }

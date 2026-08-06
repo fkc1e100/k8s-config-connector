@@ -1,63 +1,50 @@
-# S3NS KCC — Upstream Sync & Operational Considerations
+<p align="center">
+  <img src="img/s3ns_logo.png" alt="S3NS Sovereign Cloud Logo" width="300" />
+</p>
 
-This guide documents how the [`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns) fork maintains synchronization with the official Google Cloud upstream repository ([`GoogleCloudPlatform/k8s-config-connector`](https://github.com/GoogleCloudPlatform/k8s-config-connector)), along with critical operational considerations.
+# S3NS KCC — Upstream Synchronization & Maintenance Guide
+
+This guide details the operational procedure for synchronizing **[`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns)** with official Google Cloud KCC releases (`v1.155.0+`).
 
 ---
 
-## 1. Upstream Sync Strategy & Workflow
-
-When Google releases new KCC versions (e.g. `v1.155.0`, `v1.156.0`), follow this 5-step workflow to incorporate upstream bug fixes, security patches, and new Direct Controllers.
+## 1. Upstream Synchronization Workflow
 
 ```mermaid
-flowchart TD
-    Step1[1. Fetch Upstream Tags] --> Step2[2. Merge Upstream Tag into s3ns Branch]
-    Step2 --> Step3[3. Run Automated S3NS Pruning Scripts]
-    Step3 --> Step4[4. Validate S3NS CI Suite]
-    Step4 --> Step5[5. Release New S3NS Version Tag]
-```
+sequenceDiagram
+    autonumber
+    participant Google as Upstream KCC (Google Tag)
+    participant S3NS as S3NS Fork (fkc1e100/kcc-s3ns)
+    participant CI as S3NS Actions CI
 
-### 1.1 Step-by-Step Execution
-
-```bash
-# 1. Ensure upstream remote is configured
-git remote add upstream https://github.com/GoogleCloudPlatform/k8s-config-connector.git || true
-git fetch upstream --tags
-
-# 2. Create a new release branch for the target upstream version (e.g., v1.155.0)
-git checkout -b s3ns-v1.155.0 tags/v1.155.0
-
-# 3. Cherry-pick / Merge S3NS Sovereign commits from previous branch
-git merge s3ns-v1.154.1 --no-ff -m "merge(s3ns): integrate S3NS TPC enhancements into v1.155.0"
-
-# 4. Re-run Automated Pruning Suite
-./scripts/prune-s3ns-crds.sh
-./scripts/prune-s3ns-samples.sh
-./scripts/prune-s3ns-mockgcp.sh
-
-# 5. Run Verification & Unit Tests
-go test -v ./pkg/universe/...
-go test -v ./pkg/config/...
-
-# 6. Commit and push to GitHub
-git add .
-git commit -m "chore(s3ns): finalize S3NS v1.155.0 release bundle"
-git push -u origin s3ns-v1.155.0
+    Google->>S3NS: 1. Fetch Upstream Release (e.g. v1.155.0)
+    S3NS->>S3NS: 2. Merge s3ns-v1.154.1 into s3ns-v1.155.0
+    S3NS->>S3NS: 3. Run ./scripts/prune-s3ns-*.sh
+    S3NS->>CI: 4. Trigger s3ns-ci.yaml Workflow
+    CI-->>S3NS: 5. Pass Unit Tests & Allowlist Check
+    S3NS->>S3NS: 6. Tag & Publish s3ns-v1.155.0
 ```
 
 ---
 
-## 2. Key Operational & Architectural Considerations
+## 2. Automated Upstream Sync Script (`scripts/sync-upstream.sh`)
 
-### 2.1 Upstream Direct Controller Tracking
-- In upstream KCC releases, Google is actively porting resources from TF2CRD/DCL to **Direct Controllers**.
-- When Google completes the Direct Controller port for `ContainerCluster` or `Project` upstream, the S3NS fork will automatically gain native `option.WithUniverseDomain("s3nsapis.fr")` support without custom refactoring!
+The repository includes an automated synchronization script [`scripts/sync-upstream.sh`](file:///usr/local/google/home/fcurrie/Projects/kcc-s3ns/k8s-config-connector/scripts/sync-upstream.sh):
 
-### 2.2 Sovereign Private Container Registry Mirroring
-In air-gapped or restricted S3NS TPC environments:
-1. Build controller container image locally: `dev/tasks/build-images`.
-2. Push container image to S3NS private registry: `registry.s3ns.fr/kcc/controller-manager:v1.154.1-s3ns`.
-3. Update [scripts/deploy-s3ns-kcc.sh](../../scripts/deploy-s3ns-kcc.sh) `IMAGE` environment variable.
+```bash
+# Fetch and merge upstream release tag v1.155.0
+./scripts/sync-upstream.sh v1.155.0
+```
 
-### 2.3 Air-Gapped Dependency Management
-- All Go dependencies are tracked via standard `go.mod` and `go.sum`.
-- For offline builds, run `go mod vendor` to bundle dependencies directly within the repository.
+### Step-by-Step Procedure:
+
+| Step | Action | Technical Command / Scope |
+| :--- | :--- | :--- |
+| **1. Fetch Tags** | Fetch upstream tags | `git fetch upstream --tags` |
+| **2. Create Branch** | Checkout new release branch | `git checkout -b s3ns-v1.155.0 tags/v1.155.0` |
+| **3. Merge Commits** | Merge S3NS sovereign commits | `git merge s3ns-v1.154.1 --no-ff` |
+| **4. Prune CRDs** | Purge new unneeded CRDs | `./scripts/prune-s3ns-crds.sh` |
+| **5. Prune Samples** | Purge new unneeded samples | `./scripts/prune-s3ns-samples.sh` |
+| **6. Prune Mocks** | Purge new unneeded mocks | `./scripts/prune-s3ns-mockgcp.sh` |
+| **7. Validate** | Run unit tests | `go test -v ./pkg/universe/...` |
+| **8. Publish** | Push sovereign release tag | `git push origin s3ns-v1.155.0` |

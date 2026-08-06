@@ -1,0 +1,51 @@
+# Copyright 2026 S3NS / Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: S3NS Upstream Tag Checker Bot
+
+on:
+  schedule:
+    # Run every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check-upstream-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout S3NS Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Fetch Upstream Google Tags
+        run: |
+          git remote add upstream https://github.com/GoogleCloudPlatform/k8s-config-connector.git 2>/dev/null || true
+          git fetch upstream --tags
+          LATEST_UPSTREAM_TAG=$(git tag -l "v*" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          echo "LATEST_UPSTREAM_TAG=${LATEST_UPSTREAM_TAG}" >> $GITHUB_ENV
+          echo "Latest Upstream Google Release: ${LATEST_UPSTREAM_TAG}"
+
+      - name: Run Upstream Sync Validation
+        run: |
+          chmod +x ./scripts/sync-upstream.sh
+          ./scripts/sync-upstream.sh "${LATEST_UPSTREAM_TAG}"

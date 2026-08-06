@@ -27,6 +27,7 @@ S3NS_MOCK_ALLOWLIST=(
   "mockaiplatform"
   "mockserviceusage"
   "mockservicenetworking"
+  "mocks"
 )
 
 echo "Pruning mockgcp service packages for unsupported services..."

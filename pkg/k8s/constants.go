@@ -16,6 +16,7 @@ package k8s
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"k8s.io/apimachinery/pkg/types"
@@ -159,7 +160,45 @@ var (
 		// KCC no longer supports GameServicesRealm CRD as of v1.101.0.
 		"GameServicesRealm": true,
 	}
+
+	S3NSSupportedKinds = map[string]bool{
+		"ContainerCluster":           true,
+		"ContainerNodePool":          true,
+		"ComputeInstance":            true,
+		"ComputeDisk":                true,
+		"ComputeNetwork":             true,
+		"ComputeSubnetwork":          true,
+		"ComputeFirewall":            true,
+		"ComputeAddress":             true,
+		"ComputeRouter":              true,
+		"ComputeRouterNAT":           true,
+		"ComputeForwardingRule":      true,
+		"ComputeBackendService":      true,
+		"StorageBucket":              true,
+		"SQLInstance":                true,
+		"SQLDatabase":                true,
+		"SQLUser":                    true,
+		"BigQueryDataset":            true,
+		"BigQueryTable":              true,
+		"Project":                    true,
+		"Folder":                     true,
+		"IAMPolicy":                  true,
+		"IAMPartialPolicy":           true,
+		"IAMPolicyMember":            true,
+		"IAMServiceAccount":          true,
+		"SecretManagerSecret":        true,
+		"SecretManagerSecretVersion": true,
+		"VertexAIFeaturestore":       true,
+		"AIPlatformModel":            true,
+	}
 )
+
+func IsS3NSSupportedKind(kind string) bool {
+	if os.Getenv("S3NS_ALLOWLIST_ONLY") == "false" {
+		return true
+	}
+	return S3NSSupportedKinds[kind]
+}
 
 func FormatAnnotation(annotationName string) string {
 	return fmt.Sprintf("%v/%v", AnnotationPrefix, annotationName)

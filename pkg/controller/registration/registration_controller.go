@@ -315,6 +315,11 @@ func registerDefaultController(ctx context.Context, r *ReconcileRegistration, co
 		return nil, nil
 	}
 
+	if !k8s.IsS3NSSupportedKind(crd.Spec.Names.Kind) {
+		logger.Info("Skipping controller registration for non-S3NS resource kind", "group", gvk.Group, "kind", gvk.Kind)
+		return nil, nil
+	}
+
 	// Check if the resource is disabled by configuration (ConfigConnector or ConfigConnectorContext).
 	if disabled := isResourceDisabled(ctx, gvk, scopedNamespace, cccSettings, ccSettings); disabled {
 		logger.Info("Skipping controller registration because resource is disabled in ConfigConnector or ConfigConnectorContext", "group", gvk.Group, "version", gvk.Version, "kind", gvk.Kind)

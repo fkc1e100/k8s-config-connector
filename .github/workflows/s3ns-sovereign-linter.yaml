@@ -1,0 +1,55 @@
+# Copyright 2026 S3NS / Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: S3NS Sovereign & Endpoint Code Review Linter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: ["s3ns-*", "master"]
+
+jobs:
+  sovereign-review-linter:
+    name: Sovereign Endpoint & Allowlist Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Hardcoded googleapis.com Endpoints
+        run: |
+          echo "Scanning PR diff for illegal hardcoded googleapis.com strings..."
+          # Search for newly introduced .googleapis.com occurrences in Go code
+          ILLEGAL_ENDPOINTS=$(git diff origin/${{ github.base_ref }}...HEAD -- '*.go' | grep -E '^\+[^\+].*\.googleapis\.com' | grep -v 'pkg/universe' || true)
+          
+          if [ -n "${ILLEGAL_ENDPOINTS}" ]; then
+            echo "❌ ERROR: Found hardcoded googleapis.com endpoint in PR code diff:"
+            echo "${ILLEGAL_ENDPOINTS}"
+            echo "Please use universe.GetUniverseDomain() or option.WithUniverseDomain() instead!"
+            exit 1
+          fi
+          echo "✅ No hardcoded googleapis.com endpoints found in PR diff."
+
+      - name: Verify CRD Bundle Allowlist Count (40 CRDs)
+        run: |
+          CRD_COUNT=$(ls -1 config/crds/resources/*.yaml | wc -l)
+          echo "Current CRD count in bundle: ${CRD_COUNT}"
+          if [ "${CRD_COUNT}" -ne 40 ]; then
+            echo "❌ ERROR: S3NS CRD bundle must contain exactly 40 allowed CRDs (found ${CRD_COUNT})."
+            echo "Run ./scripts/prune-s3ns-crds.sh to enforce allowlist."
+            exit 1
+          fi
+          echo "✅ CRD bundle allowlist count verified (40 CRDs)."

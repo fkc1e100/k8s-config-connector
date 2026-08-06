@@ -1,0 +1,17 @@
+# S3NS Sovereign KCC Code Owners
+
+# Global owners
+* @fkc1e100
+
+# Core Sovereign Architecture & Domain Routing
+/pkg/universe/ @fkc1e100
+/pkg/config/controllerconfig.go @fkc1e100
+/pkg/tf/provider/provider.go @fkc1e100
+
+# Service Catalog & Allowlisting
+/config/crds/resources/ @fkc1e100
+/pkg/k8s/constants.go @fkc1e100
+/scripts/prune-s3ns-*.sh @fkc1e100
+
+# S3NS Documentation Suite
+/docs/s3ns/ @fkc1e100

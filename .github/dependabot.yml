@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2026 S3NS / Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,55 +14,16 @@
 
 version: 2
 updates:
-  - package-ecosystem: gomod
-    directory: /
+  # Maintain dependencies for Go modules
+  - package-ecosystem: "gomod"
+    directory: "/"
     schedule:
-      interval: daily
-    ignore:
-    - dependency-name: k8s.io/*
-      # Ignore major and minor versions for dependencies updates
-      # Allow patches and security updates.
-      # We expect we will stick pick up k8s major versions via controller-runtime.
-      update-types: ["version-update:semver-major", "version-update:semver-minor"]
-  - package-ecosystem: gomod
-    directory: /mockgcp
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: daily
-    ignore:
-    - dependency-name: k8s.io/*
-      # Ignore major and minor versions for dependencies updates
-      # Allow patches and security updates.
-      # We expect we will stick pick up k8s major versions via controller-runtime.
-      update-types: ["version-update:semver-major", "version-update:semver-minor"]
-  - package-ecosystem: docker
-    directory: /
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/builder
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/deletiondefender
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/manager
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/recorder
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/unmanageddetector
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /build/webhook
-    schedule:
-      interval: daily
-  - package-ecosystem: docker
-    directory: /operator
-    schedule:
-      interval: daily
+      interval: "weekly"
+    open-pull-requests-limit: 5

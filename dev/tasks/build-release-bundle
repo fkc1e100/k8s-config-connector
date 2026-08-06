@@ -127,13 +127,17 @@ add_license ${AUTOPILOT_NAMESPACED_BUNDLE_DIR}/per-namespace-components.yaml
 cp $CRDS_FILE ${AUTOPILOT_NAMESPACED_BUNDLE_DIR}/crds.yaml
 sed -i -E "s/\"?0.0.0-dev\"?/\"${VERSION}\"/g" ${AUTOPILOT_NAMESPACED_BUNDLE_DIR}/*
 
-# Add the sample YAML files and applications to tarball
-cp -r config/samples/ ${BUNDLE_DIR}/
+# Add S3NS deployment README to the release bundle
+cp docs/s3ns/deployment.md ${BUNDLE_DIR}/README.md
 
 # Tar release bundle with versioned S3NS name
 BUNDLE_TARBALL="${DIST}/s3ns-kcc-release-bundle-${VERSION}.tar.gz"
 tar -czvf "${BUNDLE_TARBALL}" -C ${BUNDLE_DIR}/ .
 ln -sf "s3ns-kcc-release-bundle-${VERSION}.tar.gz" "${DIST}/release-bundle.tar.gz"
+
+# Generate SHA256 checksum file
+(cd "${DIST}" && sha256sum "s3ns-kcc-release-bundle-${VERSION}.tar.gz" > "s3ns-kcc-release-bundle-${VERSION}.tar.gz.sha256")
+(cd "${DIST}" && sha256sum s3ns-kcc-release-bundle-*.tar.gz > SHA256SUMS)
 
 # Remove the temporary kustomization.yaml file we wrote
 rm -f ${REPO_ROOT}/kustomization.yaml

@@ -1,0 +1,72 @@
+# Copyright 2026 S3NS / Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: S3NS Nightly Sovereign Security Audit & Auto-Issue Creator
+
+on:
+  schedule:
+    # Run every evening at 23:00 UTC
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+
+jobs:
+  nightly-security-audit:
+    name: Nightly Sovereign Audit & Issue Generation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Run Sovereign Endpoint Audit
+        id: audit_endpoints
+        run: |
+          echo "Scanning codebase for unexpected googleapis.com hardcoding..."
+          VIOLATIONS=$(grep -rn "\.googleapis\.com" pkg/controller/direct/ pkg/config/ | grep -v "resource_name" | grep -v "fuzzer" || true)
+          if [ -n "${VIOLATIONS}" ]; then
+            echo "violations_found=true" >> $GITHUB_OUTPUT
+            echo "VIOLATIONS_LIST<<EOF" >> $GITHUB_ENV
+            echo "${VIOLATIONS}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "violations_found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Issue on Audit Failure
+        if: steps.audit_endpoints.outputs.violations_found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "security(s3ns): Nightly Audit Detected Hardcoded googleapis.com Endpoints" \
+            --label "security,audit-failure" \
+            --body "### 🚨 Nightly Sovereign Security Audit Alert
+
+The automated nightly audit detected potential hardcoded \`googleapis.com\` endpoints in direct controllers or client configuration:
+
+\`\`\`
+${{ env.VIOLATIONS_LIST }}
+\`\`\`
+
+### Action Required
+Please update these constructors to use \`universe.GetUniverseDomain()\` or \`option.WithUniverseDomain()\`.
+Refer to \`docs/s3ns/architecture.md\` for guidelines."

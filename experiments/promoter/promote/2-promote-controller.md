@@ -1,1 +1,0 @@
-Modify the controller under pkg/controller/direct/${SERVICE}/. change the go import path from "apis/${SERVICE}/v1alpha1" to "apis/${SERVICE}/v1beta1"

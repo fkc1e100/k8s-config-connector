@@ -1,2 +1,0 @@
-ACTION KIND      NAMESPACE NAME 
-Create ConfigMap default   cm1  

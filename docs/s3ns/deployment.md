@@ -35,12 +35,33 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ---
 
-## 3. Deploying S3NS KCC on GKE Autopilot
+## 3. Installation Options
 
-S3NS KCC provides an automated, Autopilot-ready deployment script that configures `GOOGLE_CLOUD_UNIVERSE_DOMAIN=s3nsapis.fr` and `WORKLOAD_IDENTITY_DOMAIN=s3ns.svc.id.goog`.
+### Option A: Installing via Official Release Bundle (`s3ns-kcc-release-bundle-*.tar.gz`)
+
+For production environments, download the pre-packaged release bundle from [GitHub Releases](https://github.com/fkc1e100/kcc-s3ns/releases):
 
 ```bash
-# Clone the repository on your deployment workstation
+# Download and extract official S3NS release bundle
+curl -L -O https://github.com/fkc1e100/kcc-s3ns/releases/download/v1.154.1-s3ns/s3ns-kcc-release-bundle-v1.154.1.tar.gz
+mkdir -p s3ns-kcc && tar -xzvf s3ns-kcc-release-bundle-v1.154.1.tar.gz -C s3ns-kcc
+cd s3ns-kcc
+
+# 1. Apply the 40 slimmed S3NS CRD manifests
+kubectl apply -f crds.yaml
+
+# 2. Deploy cnrm-controller-manager with S3NS Autopilot Workload Identity
+kubectl apply -f install-bundle-autopilot-workload-identity/0-cnrm-system.yaml
+```
+
+---
+
+### Option B: Installing from Repository Checkout
+
+If deploying directly from the source repository:
+
+```bash
+# Clone the repository
 git clone https://github.com/fkc1e100/kcc-s3ns.git
 cd kcc-s3ns
 

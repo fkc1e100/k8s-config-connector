@@ -2,9 +2,9 @@
   <img src="img/s3ns_logo.png" alt="S3NS Sovereign Cloud Logo" width="300" />
 </p>
 
-# S3NS KCC — Upstream Synchronization & Maintenance Guide
+# S3NS KCC — Upstream Synchronization & Release Build Guide
 
-This guide details the operational procedure for synchronizing **[`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns)** with official Google Cloud KCC releases (`v1.155.0+`).
+This guide details the operational procedure for synchronizing **[`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns)** with official Google Cloud KCC releases (`v1.155.0+`) and generating official **`s3ns-kcc-release-bundle-${VERSION}.tar.gz`** release artifacts.
 
 ---
 
@@ -48,3 +48,24 @@ The repository includes an automated synchronization script [`scripts/sync-upstr
 | **6. Prune Mocks** | Purge new unneeded mocks | `./scripts/prune-s3ns-mockgcp.sh` |
 | **7. Validate** | Run unit tests | `go test -v ./pkg/universe/...` |
 | **8. Publish** | Push sovereign release tag | `git push origin s3ns-v1.155.0` |
+
+---
+
+## 3. Building Release Bundles (`dev/tasks/build-release-bundle`)
+
+To produce official release artifacts for customer distribution:
+
+```bash
+# Execute the release bundle builder
+VERSION="v1.154.1-s3ns" ./dev/tasks/build-release-bundle
+
+# Generated Release Artifacts in dist/:
+# 1. dist/s3ns-kcc-release-bundle-v1.154.1-s3ns.tar.gz
+# 2. dist/release-bundle.tar.gz (symlink)
+```
+
+The resulting `s3ns-kcc-release-bundle-${VERSION}.tar.gz` bundle contains:
+- `crds.yaml`: Combined 40-CRD S3NS allowlist manifest.
+- `install-bundle-autopilot-workload-identity/`: GKE Autopilot Workload Identity installation bundle.
+- `install-bundle-namespaced/`: Multi-tenant namespaced installation bundle.
+- `samples/`: Approved S3NS sample resource configurations.

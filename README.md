@@ -47,14 +47,39 @@ This fork is built directly on top of Google Cloud's official release **[`v1.154
 
 ## 🚀 Quickstart Deployment
 
-Deploy the slimmed S3NS KCC bundle onto a GKE Autopilot cluster:
+### Option A: Download & Deploy Official Release Bundle (Recommended for Production)
+
+Download the verified S3NS release tarball and deploy directly to your GKE Autopilot cluster:
+
+```bash
+# 1. Download official release bundle & SHA-256 checksum
+curl -L -O https://github.com/fkc1e100/kcc-s3ns/releases/download/v1.154.1-s3ns/s3ns-kcc-release-bundle-v1.154.1.tar.gz
+curl -L -O https://github.com/fkc1e100/kcc-s3ns/releases/download/v1.154.1-s3ns/s3ns-kcc-release-bundle-v1.154.1.tar.gz.sha256
+
+# 2. Verify SHA-256 integrity
+sha256sum -c s3ns-kcc-release-bundle-v1.154.1.tar.gz.sha256
+
+# 3. Extract release bundle
+mkdir -p s3ns-kcc && tar -xzvf s3ns-kcc-release-bundle-v1.154.1.tar.gz -C s3ns-kcc
+cd s3ns-kcc
+
+# 4. Deploy 40 S3NS CRDs & cnrm-controller-manager for GKE Autopilot
+kubectl apply -f crds.yaml
+kubectl apply -f install-bundle-autopilot-workload-identity/0-cnrm-system.yaml
+```
+
+---
+
+### Option B: Deploy via Repository Checkout Script
+
+If deploying directly from a cloned source repository:
 
 ```bash
 # Clone the repository
 git clone https://github.com/fkc1e100/kcc-s3ns.git
 cd kcc-s3ns
 
-# Deploy 40 S3NS CRDs & cnrm-controller-manager configured for s3nsapis.fr
+# Run the S3NS Autopilot deployment script
 ./scripts/deploy-s3ns-kcc.sh
 ```
 

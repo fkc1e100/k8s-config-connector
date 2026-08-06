@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="img/s3ns_logo.png" alt="S3NS Sovereign Cloud Logo" width="300" />
+</p>
+
 # S3NS KCC — Sovereign Cloud Documentation Suite
 
 Welcome to the documentation suite for **KCC in S3NS TPC (Trusted Private Cloud)**, hosted in [`fkc1e100/kcc-s3ns`](https://github.com/fkc1e100/kcc-s3ns).
@@ -17,14 +21,14 @@ This fork provides a slimmed, sovereign-compliant version of Google Cloud's Kube
    - Official 40 CRD allowlist (Compute, GKE Autopilot, Storage, SQL, BigQuery, IAM, Secret Manager).
    - Exclusion matrix for unsupported GCP services.
 
-3. **[Developer & Testing Guide](dev-guide.md)**
+3. **[Upstream Sync & Maintenance Guide](upstream-sync-guide.md)**
+   - Re-syncing upstream releases (`v1.155.0+`) via `scripts/sync-upstream.sh`.
+   - Private container registry mirroring & offline deployment.
+
+4. **[Developer & Testing Guide](dev-guide.md)**
    - Guide to developing Direct Controllers for S3NS.
    - Running `mockgcp` integration tests with URL normalization.
    - Using `scripts/prune-s3ns-crds.sh` to keep the bundle slim.
-
-4. **[Deployment Guide](deployment.md)**
-   - Deploying slim KCC bundle on GKE Autopilot in S3NS TPC.
-   - Verification and operational troubleshooting.
 
 ---
 

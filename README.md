@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/s3ns/img/s3ns_logo.png" alt="S3NS Sovereign Cloud Logo" width="360" />
+</p>
+
 # S3NS Sovereign Kubernetes Config Connector (`kcc-s3ns`)
 
 [![s3ns-tpc-ci](https://github.com/fkc1e100/kcc-s3ns/actions/workflows/s3ns-ci.yaml/badge.svg)](https://github.com/fkc1e100/kcc-s3ns/actions/workflows/s3ns-ci.yaml)

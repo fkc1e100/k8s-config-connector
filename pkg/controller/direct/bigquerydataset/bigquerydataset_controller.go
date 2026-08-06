@@ -27,6 +27,7 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct/directbase"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct/registry"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/structuredreporting"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/universe"
 
 	bigquery "cloud.google.com/go/bigquery"
 	"google.golang.org/api/option"
@@ -39,8 +40,11 @@ import (
 )
 
 const (
-	ctrlName      = "bigquery-controller"
-	serviceDomain = "//bigquery.googleapis.com"
+	ctrlName = "bigquery-controller"
+)
+
+var (
+	serviceDomain = fmt.Sprintf("//bigquery.%s", universe.GetUniverseDomain())
 )
 
 func init() {

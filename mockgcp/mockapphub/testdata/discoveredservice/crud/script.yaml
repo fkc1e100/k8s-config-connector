@@ -1,2 +1,0 @@
-# Test for `gcloud apphub discovered-services`
-- exec: gcloud apphub discovered-services list --location=us-east1

@@ -1,6 +1,0 @@
-displayName: test-dashboard2
-etag: DASHBOARD_ETAG
-gridLayout:
-  widgets:
-  - text:
-      content: Hello World (updated!)

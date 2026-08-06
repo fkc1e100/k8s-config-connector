@@ -1,3 +1,0 @@
-- exec: gcloud tasks queues create test-${uniqueId} --location=us-central1
-- exec: gcloud tasks queues describe test-${uniqueId} --location=us-central1
-- exec: gcloud tasks queues delete test-${uniqueId} --location=us-central1 --quiet

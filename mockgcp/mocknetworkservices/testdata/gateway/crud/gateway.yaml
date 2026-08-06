@@ -1,6 +1,0 @@
-name: test-${uniqueId}
-type: OPEN_MESH
-ports:
-- 80
-- 443
-scope: gateway-proxy

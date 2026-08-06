@@ -1,3 +1,0 @@
-- exec: gcloud notebooks instances create test-${uniqueId} --location=us-central1-a
-- exec: gcloud notebooks instances describe test-${uniqueId} --location=us-central1-a
-- exec: gcloud notebooks instances delete test-${uniqueId} --location=us-central1-a
